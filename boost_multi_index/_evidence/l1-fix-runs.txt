@@ -1,0 +1,26 @@
+# fix pass 2026-11-13 (M1 Max, clang++ -std=c++23 -O2)
+hand-rolled: allocations per add()    = 3
+hand-rolled: allocations per cancel() = 0
+sizes: by_id=500 by_price=500 by_client=1000
+client 0 open qty = 710  (garbage or crash if any pointer dangles)
+hand-rolled: allocations per add()    = 3
+hand-rolled: allocations per cancel() = 0
+sizes: by_id=500 by_price=500 by_client=1000
+client 0 open qty = 710  (garbage or crash if any pointer dangles)
+hand-rolled: allocations per add()    = 3
+hand-rolled: allocations per cancel() = 0
+sizes: by_id=500 by_price=500 by_client=1000
+client 0 open qty = 710  (garbage or crash if any pointer dangles)
+hand-rolled: allocations per add()    = 3
+hand-rolled: allocations per cancel() = 0
+sizes: by_id=500 by_price=500 by_client=500
+book says best ask = order 501, key price 101, order's real price 101
+order 999 still filed under price 149 in the book: yes (stale key)
+--- ASan: clang++ -std=c++23 -O1 -g -fsanitize=address ... l1_asan bug (head)
+=================================================================
+==56270==ERROR: AddressSanitizer: heap-use-after-free on address 0x606000000358 at pc 0x000104865644 bp 0x00016b59a930 sp 0x00016b59a928
+READ of size 4 at 0x606000000358 thread T0
+    #0 0x000104865640 in main l1_handrolled.cpp:91
+    #1 0x00019ac0fe7c in start+0x1a1c (dyld:arm64e+0x31e7c)
+
+SUMMARY: AddressSanitizer: heap-use-after-free l1_handrolled.cpp:91 in main

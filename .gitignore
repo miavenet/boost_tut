@@ -1,0 +1,11 @@
+# Learner state and local outputs
+progress*.json
+*.attempts
+*.jsonl
+__pycache__/
+*.pyc
+.DS_Store
+*.swp
+*.o
+*.dSYM/
+build/

@@ -1,0 +1,3 @@
+using Store = multi_index_container<Order, indexed_by<
+    hashed_unique<member<Order, std::uint64_t, &Order::id>>,
+    ordered_unique<member<Order, std::int64_t, &Order::price>>>>;

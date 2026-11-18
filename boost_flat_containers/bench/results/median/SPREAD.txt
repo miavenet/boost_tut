@@ -1,0 +1,15 @@
+# (max-min)/median across 5 runs, over all numeric cells in the file
+bulk_build.ndebug.txt: median cell spread 2%  p90 8%  max 12%
+bulk_build.txt: median cell spread 2%  p90 8%  max 18%
+capstone.txt: median cell spread 17%  p90 63%  max 520%
+capstone_pmr.txt: median cell spread 10%  p90 77%  max 235%
+capstone_reserve.txt: median cell spread 14%  p90 80%  max 525%
+capstone_staged.txt: line counts differ across runs (histogram-style file); see raw runs
+direct_index.ndebug.txt: median cell spread 9%  p90 54%  max 82%
+direct_index.txt: median cell spread 16%  p90 35%  max 119%
+eytzinger.ndebug.txt: median cell spread 9%  p90 31%  max 48%
+eytzinger.txt: median cell spread 7%  p90 19%  max 25%
+insert_tail.ndebug.txt: median cell spread 5%  p90 142%  max 902%
+insert_tail.txt: median cell spread 16%  p90 136%  max 438%
+lookup_crossover.ndebug.txt: median cell spread 5%  p90 13%  max 42%
+lookup_crossover.txt: median cell spread 4%  p90 13%  max 309%

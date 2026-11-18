@@ -1,0 +1,1 @@
+return !o.ack_hook.is_linked();

@@ -1,0 +1,6 @@
+machine: Darwin arm64, Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2
+ct_boost  compile s: 0.489 0.494 0.481 0.480 0.487  median 0.487   preprocessed lines: 67642
+ct_hand   compile s: 0.364 0.368 0.365 0.370 0.376  median 0.368   preprocessed lines: 51854
+
+lines you own (hand-rolled):  178 labs/hft_mem/hft_handroll.hpp, 155 labs/hft_mem/hft_slab.hpp
+Boost.Intrusive headers:      40885 lines in /opt/homebrew/include/boost/intrusive/{,detail/}*.hpp (98 files)

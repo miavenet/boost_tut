@@ -1,0 +1,1 @@
+std::size_t s = (off_ + align - 1) & ~(align - 1); if (s + bytes > cap_) return nullptr; off_ = s + bytes; return base_ + s;

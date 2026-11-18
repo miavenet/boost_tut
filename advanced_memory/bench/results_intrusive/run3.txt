@@ -1,0 +1,80 @@
+machine: Darwin arm64 Apple M1 Max, Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2 -DNDEBUG
+load: 3.31 6.75 12.51   time machine: Copying
+hook.is_linked() x64                         n=100000  mean=   114 p50=  125 p99=  250 p99.9=   292 max=   14833 ns  faults=0
+bitmask bit test x64                         n=100000  mean=   101 p50=   84 p99=  167 p99.9=   250 max=   15042 ns  faults=0
+state enum compare x64                       n=100000  mean=    93 p50=   83 p99=  208 p99.9=   292 max=   18375 ns  faults=0
+unordered_set<id>.contains x64               n=100000  mean=   774 p50=  750 p99= 1083 p99.9=  1834 max=   15208 ns  faults=0
+flat_set<id>.contains x64                    n=100000  mean=  3477 p50= 3458 p99= 3959 p99.9=  8500 max=   22792 ns  faults=0
+multi_index find(id)->state x64              n=100000  mean=   651 p50=  625 p99= 1041 p99.9=  1625 max=   14834 ns  faults=0
+std::list<Order*> find x1 (50k list)         n=2000    mean= 51416 p50=64334 p99=71667 p99.9= 74500 max=   90334 ns  faults=0
+hooks: unlink + push_back x16                n=20000   mean=    53 p50=   42 p99=  125 p99.9=   167 max=    4625 ns  faults=0
+unordered_set<id>: erase + insert x16        n=20000   mean=   490 p50=  459 p99=  625 p99.9=   750 max=    8250 ns  faults=0
+state enum assign x16                        n=20000   mean=    22 p50=   41 p99=   42 p99.9=    84 max=     125 ns  faults=0
+std::list<Order*>: find+erase+push x1        n=500     mean= 33462 p50=33833 p99=63125 p99.9= 65167 max=   78167 ns  faults=0
+scan 1024 hooked orders (112 B each)         n=20000   mean=   940 p50=  875 p99= 1375 p99.9=  1708 max=   19750 ns  faults=0
+scan 1024 lean orders (32 B each)            n=20000   mean=   385 p50=  375 p99=  417 p99.9=   542 max=    6583 ns  faults=0
+A  intrusive+slab+flat_map add               n=139998  mean=    27 p50=   41 p99=   83 p99.9=   125 max=   19209 ns  faults=0
+A  intrusive+slab+flat_map cancel            n=139773  mean=    47 p50=   42 p99=  167 p99.9=  1250 max=   38750 ns  faults=0
+A  intrusive+slab+flat_map modify            n=79935   mean=    38 p50=   41 p99=  166 p99.9=   417 max=   13041 ns  faults=0
+A  intrusive+slab+flat_map walk              n=40294   mean=   584 p50=  500 p99= 1875 p99.9=  3875 max=    9625 ns  faults=0
+A2 intrusive+slab, id=handle add             n=139998  mean=    22 p50=   41 p99=   42 p99.9=    42 max=     167 ns  faults=0
+A2 intrusive+slab, id=handle cancel          n=139773  mean=    22 p50=   41 p99=   42 p99.9=    83 max=     250 ns  faults=0
+A2 intrusive+slab, id=handle modify          n=79935   mean=    21 p50=    0 p99=   42 p99.9=    83 max=    2584 ns  faults=0
+A2 intrusive+slab, id=handle walk            n=40294   mean=   427 p50=  417 p99=  625 p99.9=   916 max=   16083 ns  faults=0
+B  multi_index default alloc add             n=139998  mean=   193 p50=  208 p99=  292 p99.9=   541 max=    6917 ns  faults=1
+B  multi_index default alloc cancel          n=139773  mean=   102 p50=   84 p99=  250 p99.9=   708 max=    8416 ns  faults=1
+B  multi_index default alloc modify          n=79935   mean=    64 p50=   42 p99=  167 p99.9=   250 max=    2958 ns  faults=1
+B  multi_index default alloc walk            n=40294   mean=   680 p50=  667 p99= 1041 p99.9=  1958 max=   37125 ns  faults=1
+C  multi_index hft::allocator add            n=139998  mean=   200 p50=  208 p99=  292 p99.9=   334 max=   37042 ns  faults=0
+C  multi_index hft::allocator cancel         n=139773  mean=    76 p50=   83 p99=  167 p99.9=   209 max=   17041 ns  faults=0
+C  multi_index hft::allocator modify         n=79935   mean=    61 p50=   42 p99=  125 p99.9=   208 max=     542 ns  faults=0
+C  multi_index hft::allocator walk           n=40294   mean=   688 p50=  667 p99=  958 p99.9=  1083 max=   12375 ns  faults=0
+D  list<Order*>+unordered_map add            n=139998  mean=   109 p50=  125 p99=  167 p99.9=  1458 max=   17084 ns  faults=190
+D  list<Order*>+unordered_map cancel         n=139773  mean=   143 p50=  125 p99=  292 p99.9=   334 max=    4125 ns  faults=190
+D  list<Order*>+unordered_map modify         n=79935   mean=    62 p50=   42 p99=  167 p99.9=   250 max=    2417 ns  faults=190
+D  list<Order*>+unordered_map walk           n=40294   mean=   587 p50=  542 p99= 1250 p99.9=  1667 max=   12667 ns  faults=190
+hand dlist (ptr) push_back                   n=179949  mean=    19 p50=    0 p99=   42 p99.9=    83 max=   31125 ns  faults=0
+hand dlist (ptr) erase(obj)                  n=179894  mean=    21 p50=    0 p99=   83 p99.9=   125 max=    4417 ns  faults=0
+hand dlist (ptr) walk                        n=40157   mean=   199 p50=  167 p99=  500 p99.9=  1917 max=    8916 ns  faults=0
+hand idx_list (u32) push_back                n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    1959 ns  faults=0
+hand idx_list (u32) erase(obj)               n=179894  mean=    22 p50=   41 p99=   42 p99.9=    83 max=     209 ns  faults=0
+hand idx_list (u32) walk                     n=40157   mean=   217 p50=  209 p99=  334 p99.9=   417 max=    3875 ns  faults=0
+bi::list safe,size push_back                 n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    2375 ns  faults=0
+bi::list safe,size erase(obj)                n=179894  mean=    19 p50=    0 p99=   42 p99.9=    84 max=    6458 ns  faults=0
+bi::list safe,size walk                      n=40157   mean=   188 p50=  167 p99=  417 p99.9=   625 max=    6708 ns  faults=0
+bi::list normal,size push_back               n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=     209 ns  faults=0
+bi::list normal,size erase(obj)              n=179894  mean=    19 p50=    0 p99=   42 p99.9=    42 max=     209 ns  faults=0
+bi::list normal,size walk                    n=40157   mean=   175 p50=  167 p99=  291 p99.9=   333 max=    4000 ns  faults=0
+bi::list safe,nosize push_back               n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=     208 ns  faults=0
+bi::list safe,nosize erase(obj)              n=179894  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    1833 ns  faults=0
+bi::list safe,nosize walk                    n=40157   mean=   173 p50=  167 p99=  291 p99.9=   333 max=    4208 ns  faults=0
+bi::list normal,nosize push_back             n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    3500 ns  faults=0
+bi::list normal,nosize erase(obj)            n=179894  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    7875 ns  faults=0
+bi::list normal,nosize walk                  n=40157   mean=   173 p50=  167 p99=  291 p99.9=   333 max=     458 ns  faults=0
+bi::slist normal push_back                   n=179949  mean=    20 p50=    0 p99=   42 p99.9=    42 max=    5334 ns  faults=0
+bi::slist normal erase(obj)                  n=179894  mean=    91 p50=   83 p99=  209 p99.9=   291 max=    5583 ns  faults=0
+bi::slist normal walk                        n=40157   mean=   191 p50=  208 p99=  333 p99.9=   375 max=    6292 ns  faults=0
+hand hash_index 64k bkt find(id)             n=199838  mean=    25 p50=   41 p99=   83 p99.9=   125 max=     209 ns  faults=0
+hand hash_index 64k bkt erase+insert         n=200162  mean=    27 p50=   41 p99=   42 p99.9=    84 max=     209 ns  faults=0
+bi::unordered_set 64k bkt find(id)           n=199838  mean=    25 p50=   41 p99=   83 p99.9=   125 max=    3334 ns  faults=0
+bi::unordered_set 64k bkt erase+insert       n=200162  mean=    40 p50=   42 p99=   84 p99.9=   125 max=    3750 ns  faults=0
+bi::set (rbtree) find(id)                    n=199838  mean=    94 p50=   84 p99=  167 p99.9=   208 max=    8459 ns  faults=0
+bi::set (rbtree) erase+insert                n=200162  mean=   167 p50=  167 p99=  250 p99.9=   333 max=    6250 ns  faults=0
+unordered_flat_map<id,T*> find(id)           n=199838  mean=    21 p50=   41 p99=   42 p99.9=    84 max=     167 ns  faults=65
+unordered_flat_map<id,T*> erase+insert       n=200162  mean=    55 p50=   42 p99=   84 p99.9=   125 max=  529625 ns  faults=65
+unordered_flat_map bucket_count: after reserve 61439, after the run 61439
+unordered_flat_map<id,T*> 2x rsv find(id)    n=199838  mean=    20 p50=    0 p99=   42 p99.9=    42 max=     167 ns  faults=0
+unordered_flat_map<id,T*> 2x rsv erase+insert n=200162  mean=    24 p50=   41 p99=   83 p99.9=    84 max=     209 ns  faults=0
+unordered_flat_map bucket_count: after reserve 122879, after the run 122879
+hand pool (free list)                        n=400000  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    7375 ns  faults=0
+hft::slab (unchecked)                        n=400000  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    2125 ns  faults=0
+boost::pool<> malloc/free                    n=400000  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    2417 ns  faults=0
+boost::pool<> malloc/ordered_free            n=400000  mean=  1433 p50=   41 p99=32250 p99.9= 45291 max=  139167 ns  faults=0
+boost::object_pool construct/destroy         n=400000  mean=  1442 p50=   41 p99=32542 p99.9= 45500 max=   99541 ns  faults=0
+operator new/delete                          n=400000  mean=    70 p50=   83 p99=  166 p99.9=   417 max=   17583 ns  faults=1
+ASSERTS bi::list safe,size push_back                 n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    4292 ns  faults=0
+ASSERTS bi::list safe,size erase(obj)                n=179894  mean=    19 p50=    0 p99=   42 p99.9=    42 max=     167 ns  faults=0
+ASSERTS bi::list safe,size walk                      n=40157   mean=   162 p50=  167 p99=  250 p99.9=   292 max=    8000 ns  faults=0
+ASSERTS bi::list normal,size push_back               n=179949  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    6166 ns  faults=0
+ASSERTS bi::list normal,size erase(obj)              n=179894  mean=    20 p50=    0 p99=   42 p99.9=    84 max=   12167 ns  faults=0
+ASSERTS bi::list normal,size walk                    n=40157   mean=   199 p50=  208 p99=  458 p99.9=  1167 max=   23750 ns  faults=0

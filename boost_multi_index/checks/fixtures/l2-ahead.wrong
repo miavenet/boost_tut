@@ -1,0 +1,4 @@
+int ahead(const Store& s, std::uint64_t id) {
+    auto it = s.project<ByBook>(s.get<ById>().find(id));
+    return int(std::distance(s.get<ByBook>().begin(), it));
+}

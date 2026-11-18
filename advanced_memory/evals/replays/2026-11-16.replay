@@ -1,0 +1,88 @@
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+answer	arena.unseal();
+confidence	0.3
+continue	
+answer	reserve
+confidence	0.8
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	unsure
+grade	m
+continue	
+answer	hft::map<long, Order>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	sure
+grade	m
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+stretch	
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+answer	no-op ; release
+confidence	0.8
+continue	
+answer	do_is_equal
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	m
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	

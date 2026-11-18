@@ -1,0 +1,4 @@
+N=1000000 ops on one ordered_unique index, timed one at a time (timer tick ~41 ns); nodes from a pre-touched arena
+insert, ascending keys                   n=1000000  mean=   204.1  p50=   208.0  p99=   292.0  p99.9=    500.0  max=  168750.0 ns  >100us:1
+insert, pseudo-random keys               n=1000000  mean=   523.3  p50=   500.0  p99=  1250.0  p99.9=   3833.0  max=   53459.0 ns  >100us:0
+erase, pseudo-random keys                n=1000000  mean=   499.4  p50=   500.0  p99=  1042.0  p99.9=   1458.0  max=   34833.0 ns  >100us:0

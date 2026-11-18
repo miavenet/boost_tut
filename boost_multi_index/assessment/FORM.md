@@ -1,0 +1,108 @@
+# Assessment — multi-index-delayed-1
+
+Time: about 8 minutes. Stop and resume after any response.
+Prerequisites: M1C1, M1C3, M2C4, M3C1, M3C3, M4C5
+Write every response before opening the keys. Record the actual date and time.
+Reusing this form means its transfer tasks are exposed, not novel.
+
+## A1 — retention — M1C1
+A code review finds `cancel(id)` in a hand-rolled store (one owning id map plus two containers of `Order*`). It erases from the id map and the price map only. Name this failure mode and say what the client container now holds. Then name the other two ways such a store drifts out of sync, and give the heap allocations per insert for this 3-container design versus a multi_index_container with the same 3 indices.
+
+## A2 — transfer — M1C1
+New domain: a hospital bed board. Patient records live in `std::unordered_map<Mrn, Patient>`, and a `std::multimap<int ward, Patient*>` lists patients per ward. When a patient moves from ward 3 to ward 5, the nurse's app does `patients[mrn].ward = 5;` and nothing else. What does the ward-3 report show afterwards, what is this failure called, and how does a two-index multi_index_container make this mistake impossible? How many allocations does admitting one patient cost in each design?
+
+## B1 — retention — M1C3
+From memory: what does `s.get<ByClient>()` return, and why are tags preferred to index numbers? What does `s.project<ByBook>(it)` do with an iterator `it` from another index, and at what cost compared with searching the book again? Finally, what do the two halves of an index specifier name such as `ordered_non_unique` mean?
+
+## B2 — transfer — M1C3
+New domain: a library catalogue. `struct Book { std::string isbn; std::string author; int year; };` must be found by `isbn` (unique, hashed), and the front desk needs "every book by one author, oldest first" as a range (an author has many books, and two books can share author and year). Write `using Catalogue = multi_index_container<...>;` and the single call on index 1 that returns every book by "Le Guin".
+
+## C1 — retention — M2C4
+From memory: `modify(it, f)` changes an element so that it now collides in a unique index. What happens to the element, the container size and the return value? What does the three-argument form `modify(it, f, rollback)` do, and what must you do before calling it? How does `replace(it, x)` behave on the same collision?
+
+## C2 — transfer — M2C4
+New domain: ride-hailing dispatch. `multi_index_container<Driver, indexed_by<hashed_unique<key<&Driver::id>>, hashed_unique<key<&Driver::plate>>, hashed_non_unique<key<&Driver::city>>>>` holds about 200,000 drivers in 4 cities. (a) A nightly job uses `modify` to update every driver's `rating` (no index uses it). Can it erase a driver? Why is it slow, and up to how many nodes might one call step through? (b) Another job sets `plate` from a CSV that contains one duplicate plate. What happens to the second driver with plain `modify`, and how do you fix the job?
+
+## D1 — retention — M3C1
+From memory, for the course's 64-bit build: why is an ordered-index header 3 words rather than 4? What does a `ranked` index add to the ordered header, and what does that buy? Beyond its 8-byte node header, what extra per-element memory does `random_access` cost?
+
+## D2 — transfer — M3C1
+New domain: a telemetry service stores a 48-byte `Sample` in a multi_index_container with `sequenced<>`, `hashed_unique<...>` and `ordered_non_unique<...>`, on a 64-bit build like the course's (use the course's header sizes; the rule is value plus the sum of headers). (a) Predict the node size. (b) A consumer keeps a `const Sample*` while a million more samples are inserted and the hashed index rehashes several times. Is the pointer still valid? Would it be if samples lived in a `std::vector<Sample>`? (c) If `sequenced<>` became `random_access<>` to get `operator[]`, what is the new node size, and what do you give up?
+
+## E1 — retention — M3C3
+From memory: why can a hashed index with a mean insert of about 50 ns have a single insert that takes milliseconds? What is the default `max_load_factor`? On a multi_index_container with hashed indices 0 and 2, which indices does `s.reserve(n)` reserve, and what do you write instead?
+
+## E2 — transfer — M3C3
+New domain: a web-analytics session store with 4 million live sessions in a multi_index_container: index 0 `hashed_unique` on session id, index 1 `hashed_non_unique` on user id, index 2 `ordered_unique` on session id (added "so ids can be listed in order"). The service calls `s.reserve(4'000'000)` at startup, and every per-request lookup by id goes through index 2. Each insert must stay well under 100 µs. Name the tail-latency and lookup problems in this setup, with a fix for each. Session ids arrive in random order: would swapping in a `std::pmr::monotonic_buffer_resource` arena speed up a walk of index 2 in id order?
+
+## F1 — retention — M4C5
+From memory: for each hot-path job, name what replaces Boost.MultiIndex and the trade-off it brings. (a) A book whose prices are integer ticks in a known band. (b) Id lookup when you issue the ids. (c) Id lookup when the exchange issues sparse ids. (d) Order storage linked into several lists with zero allocations. Then name one kind of table where multi_index is the right tool, and why.
+
+## F2 — transfer — M4C5
+New domain: a game server tracks about 50,000 online players by player id (dense integers the server assigns), by guild (many players each) and by unique name (for /whisper). The admin console uses all three lookups occasionally and must never show inconsistent data. The 60 Hz matchmaking loop reads a player's rating by id on every tick, and the HUD shows each guild's total online count every tick. Decide where Boost.MultiIndex belongs and what each hot read uses instead, with a mechanism for each choice.
+
+# Keys — open after all responses
+
+## A1
+- Forgotten index: the client container still holds dangling pointers to destroyed orders (reading through them is a use-after-free that can print a normal-looking number).
+- Stale key: a key changed through one path only, so another container still files the element under the old key.
+- Partial failure: an insert or exception updates only some of the containers.
+- Allocations: 3 per insert hand-rolled (one node per container) versus 1 per insert for multi_index_container (one node per element, whatever the index count).
+
+## A2
+- Ward 3's report still lists the patient: the multimap still files the record under the old key (stale key). Nothing crashes and the compiler catches nothing.
+- In a multi_index_container elements are const through every index, so `ward` can only change through `modify`/`replace`, which re-file the element in every index.
+- Allocations per admission: 2 hand-rolled (one node per container) versus 1 with multi_index (one node per element).
+
+## B1
+- `get<Tag>()` returns a reference to that index, which behaves like a std container; tags survive reordering of `indexed_by`, numbers rot when the list is reordered (both work).
+- `project<ByBook>(it)` converts the iterator into a ByBook iterator for the same element (same node) in constant time, instead of another O(log n) search.
+- Structure then uniqueness: `ordered_` behaves like `set` (sorted), `hashed_` like `unordered_set`; `_unique` rejects duplicate keys, `_non_unique` accepts them.
+
+## B2
+- Index 0: `hashed_unique<key<&Book::isbn>>` (or `member<Book, std::string, &Book::isbn>`).
+- Index 1: `ordered_non_unique<key<&Book::author, &Book::year>>` (or `composite_key<Book, member<...author>, member<...year>>`). Non-unique, because (author, year) can repeat.
+- Call: `c.get<1>().equal_range(std::make_tuple(std::string("Le Guin")))`: a shorter tuple is a prefix lookup. It works only because index 1 is ordered; a hashed composite index cannot answer a prefix.
+
+## C1
+- Plain modify erases the element: it returns false and the size drops by one.
+- `modify(it, f, rollback)` calls `rollback(e)` on failure; if that restores a value that fits all indices, the element is kept (still returns false). Capture the old field value before modifying.
+- `replace` leaves the element and the container unchanged and returns false (strong guarantee).
+
+## C2
+- (a) No erase: `rating` is not a key of any unique index, so nothing can collide.
+- (a) Slow: after modify the hashed_non_unique city index cannot tell whether its key changed, so it re-checks the element's position by walking the equal-key group, up to O(group size): about 50,000 drivers per city here. Use `replace` (it compares old and new keys and skips unchanged indices), or make the city index `ordered_non_unique` (neighbour check only).
+- (b) The duplicate collides in the unique plate index, so plain modify erases that driver and returns false. Fix: a rollback that restores the old plate (captured first), or `replace`, and check the return value.
+
+## D1
+- The red-black colour bit is packed into the parent pointer (Boost: one system word saved per ordered index), so the header is 24 B.
+- Ranked adds a size word (32 B header) so it can answer nth and rank in O(log n).
+- random_access also keeps a pointer array: 8 B per element on top of the 8 B header.
+
+## D2
+- (a) 48 + 16 + 16 + 24 = 104 B (value + sequenced 16 + hashed 16 + ordered 24). The spy-allocator check is how you would confirm it.
+- (b) Yes: nodes never move, so pointers, references and iterators stay valid in every index until that element is erased, rehash included. A `std::vector` moves its elements when it grows, so that pointer would dangle.
+- (c) 48 + 8 + 16 + 24 = 96 B, plus an 8 B per element pointer array. You still get no contiguity and no `data()`, and inserts or erases away from the back cost O(distance to end), because the pointer array shifts.
+
+## E1
+- When an insert pushes size/buckets past max_load_factor, that one insert rehashes every element already stored: O(n) work on a single operation (measured max about 8 ms behind a mean of about 52 ns).
+- max_load_factor is 1.0 by default.
+- `s.reserve(n)` forwards to index 0 only. Write `s.get<0>().reserve(n); s.get<2>().reserve(n);` (every hashed index; ordered indices have no buckets).
+
+## E2
+- `s.reserve` reaches index 0 only, so the user-id hashed index still rehashes everything on some inserts (millisecond max). Also call `s.get<1>().reserve(n)`.
+- Id lookup through an ordered index costs about log2(4M) ≈ 22 dependent node visits, mostly cache misses at this size (about 1,000 ns measured at 4M, versus about 240 ns for an MI hashed index). Look up by id through the hashed index.
+- After reserve, the remaining insert tail is fresh node allocation including first-touch page faults. An allocator over pre-touched memory (the allocator template parameter) cuts it.
+- The arena does not fix the walk: it lays nodes out in allocation (arrival) order, so walking in id order still misses cache on most steps (measured about 81 ns per node with or without the arena, versus about 6.6 ns when arrival order matched walk order). That needs a layout contiguous in walk order.
+
+## F1
+- (a) A price ladder: an array of levels indexed by tick, each a FIFO list. You must know the band (out-of-band prices need a fallback), and memory grows with the band, not the order count.
+- (b) A dense slot array, `slots[id]`, one load. Ids need recycling and a bounded range.
+- (c) `boost::unordered_flat_map` (open addressing), reserved up front, storing a slot index, because its elements move on rehash.
+- (d) `boost::intrusive` lists over a pre-allocated pool. You own lifetime: unlink before reusing a slot, and never let the pool reallocate.
+- Right tool: warm-side tables with 2+ access paths where consistency matters more than nanoseconds (reference data, risk/position views, drop-copy). One node, const elements and erase-once remove the hand-sync bugs.
+
+## F2
+- Use multi_index for the warm player directory (id / guild / name): several access paths with consistency guaranteed by one node per player, const elements and erase-once.
+- Hot rating-by-id: a dense array indexed by the server-assigned id (one load), not a node lookup that chases pointers through cache misses.
+- Per-guild online total: keep a running aggregate updated on join and leave. No index choice fixes it, because summing a guild means visiting every member's scattered node (a scan).

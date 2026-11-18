@@ -1,0 +1,119 @@
+answer	160000
+confidence	sure
+continue	
+answer	use-after-free (dangling into a freed block); different element; reallocation (first case).
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<const int&, double&>; std::move(s).extract().
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<Key,T> with a non-const key; move-assign; movable (preferably nothrow-movable).
+confidence	unsure
+grade	h
+continue	
+answer	Insert/emplace (shift, and reallocation when full), erase (shift of elements at/after the erased key), and reserve/growth (reallocation). std::map allocates each element as its own node and never moves it, so references stay valid until that element is erased.
+confidence	unsure
+grade	h
+continue	
+answer	The array is no longer sorted, so binary search returns wrong results, even for keys that were not changed. std::map has node handles (extract(key)/insert(node)) and stable references. A flat_map has neither (and needs movable element types).
+confidence	unsure
+grade	h
+continue	
+answer	Boost owns one sequence of pair<K,T>; std adapts two containers (keys, values). Consequence: std's search reads only the keys array, which should mean fewer cache lines per probe. In the bench std::flat_map was ~20–25% faster at 1M with 8-byte keys, but larger values slowed it about as much as Boost (+18% vs +22%), and with 32-byte keys at 1M it was slower, so measure. Boost value_type/reference i
+confidence	unsure
+grade	h
+continue	
+answer	long limit_after_listing(RiskTable& t) { add_listings(t); return t.find(200)->second.max_qty; }
+confidence	unsure
+continue	
+answer	auto c = std::move(s).extract();\nfor (auto& v : c.values) v = 0.0;\ns.replace(std::move(c.keys), std::move(c.values));
+confidence	unsure
+continue	
+answer	Any insert/erase in the flat_map moves Orders, so the queue's pointers dangle (realloc) or silently point at other orders (shift). Fixes: store keys (OrderId) in the queue and re-find; or keep Orders in stable storage (node container / pool / std::deque with no middle erase) and index them; or use a node-based map when pointer stability is required.
+confidence	unsure
+grade	h
+continue	
+answer	std::flat_map (separate keys array): contains() reads only the 16-byte keys, so the search touches fewer cache lines than striding over 272-byte pairs. Before committing, measure your actual shapes (the bench showed std::flat_map ~24% ahead at 8B keys / 64B values at 1M, but also ~21% ahead at 8B values, so the bigger value added no extra gain, and a loss at 32B keys / 1M: 464.8 vs 334.0 ns). You 
+confidence	unsure
+grade	h
+continue	
+answer	Same decision: elements live by value in one array that the container shifts with move-assignment. That move-assignment needs a non-const key, and it moves elements under your references. std::flat_map also shifts elements (so references and iterators still dangle), but its proxy reference exposes the key as const, so you cannot break the ordering through an iterator.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	X ≈ 865 ms, Y ≈ 6.6 ms (bench/results/median/bulk_build.ndebug.txt; one-by-one varied only 863–867 ms over 5 runs). One-by-one is quadratic: going from 10k to 100k keys (10×) made it ~127× slower (6.8 → 865 ms). CONCEPT L3C1.
+confidence	unsure
+continue	
+answer	31 (measured). Boost's vector grows by 60% by default (growth_factor_60), and 1.6^30 ≈ 1.3M. The last of those 31 moves a ~1M-entry array: that is the ~1 ms max. CONCEPT L3C2.
+confidence	unsure
+continue	
+answer	It throws, and NOT std::bad_alloc: it is `boost::container::bad_alloc`, which derives from `boost::container::exception` → `std::exception`. `catch (const std::bad_alloc&)` misses it. CONCEPT L3C4.
+confidence	unsure
+continue	
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+answer	adopt_sequence; ordered_unique_range.
+confidence	unsure
+grade	h
+continue	
+answer	size(); capacity(); 60 (growth_factor_60); reserve(expected maximum).
+confidence	unsure
+grade	h
+continue	
+answer	moves to heap storage and keeps working (one allocation); throws boost::container::bad_alloc and never allocates.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Sort + `flat_map(ordered_unique_range, first, last)`; sort a `sequence_type` + `adopt_sequence(ordered_unique_range, std::move(seq))`; plain range constructor `flat_map(first, last)` (sorts for you). Also `adopt_sequence(std::move(seq))`, which sorts and removes duplicates. ordered_unique_range promises the input is already sorted by the comparator and has unique keys. The library does not check i
+confidence	unsure
+grade	h
+continue	
+answer	FM build(std::vector<std::pair<uint64_t,uint64_t>> v) { std::sort(v.begin(), v.end()); return FM(bc::ordered_unique_range, v.begin(), v.end()); }
+confidence	unsure
+continue	
+answer	Growth reallocates and moves the whole array when size()==capacity(). That is rare (31 times for 1M appends), so the mean hides it, but the worst insert copies ~MBs. Fix: reserve() the session's maximum size at startup (or build in bulk at the final size).
+confidence	unsure
+grade	h
+continue	
+answer	Update existing entries in place (find + assign it->second; nothing moves). Collect the 10,000 new pairs, sort them, and merge once with `insert(ordered_unique_range, first, last)` (or rebuild the sequence and adopt it), never 10,000 single inserts into a 2M array.
+confidence	unsure
+grade	h
+continue	
+answer	boost::container::bad_alloc
+confidence	unsure
+continue	
+answer	small_vector with a small inline N (e.g. 2–4). The common case makes zero heap allocations, and rare bigger cases still work. Trade-off: a larger sizeof per map (inline storage), and the first overflow costs a heap allocation (a latency blip).
+confidence	unsure
+grade	h
+continue	
+answer	static_vector grows onto the heap like small_vector
+confidence	sure
+grade	m
+continue	
+continue	
+answer	Build in bulk (sorted + ordered_unique_range / adopt_sequence), which prevents O(N²) startup. reserve the session maximum at startup, which prevents reallocation spikes (1 ms max vs 26 ns mean). Update in place, append or batch-merge, and avoid front/middle inserts on the hot path, which prevents O(N) shifts per event. Use small_vector/static_vector when the size is small and bounded, which preven
+confidence	unsure
+grade	h
+continue	
+answer	Pass the sequence as the 4th template argument: `flat_map<K, T, std::less<K>, small_vector<std::pair<K,T>, N>>` (or static_vector<…, N>). small_vector: past N it allocates on the heap and keeps working. static_vector: never allocates; past N it throws boost::container::bad_alloc (default throw_on_overflow<true>; UB if overflow checking is turned off).
+confidence	unsure
+grade	h
+continue	

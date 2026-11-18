@@ -1,0 +1,128 @@
+answer	Pass the sequence as the 4th template argument: `flat_map<K, T, std::less<K>, small_vector<std::pair<K,T>, N>>` (or static_vector<…, N>). small_vector: past N it allocates on the heap and keeps working. static_vector: never allocates; past N it throws boost::container::bad_alloc (default throw_on_overflow<true>; UB if overflow checking is turned off).
+confidence	unsure
+grade	h
+continue	
+answer	adopt_sequence; ordered_unique_range.
+confidence	unsure
+grade	h
+continue	
+answer	size(); capacity(); 60 (growth_factor_60); reserve(expected maximum).
+confidence	unsure
+grade	h
+continue	
+answer	moves to heap storage and keeps working (one allocation); throws boost::container::bad_alloc and never allocates.
+confidence	unsure
+grade	h
+continue	
+answer	Sort + `flat_map(ordered_unique_range, first, last)`; sort a `sequence_type` + `adopt_sequence(ordered_unique_range, std::move(seq))`; plain range constructor `flat_map(first, last)` (sorts for you). Also `adopt_sequence(std::move(seq))`, which sorts and removes duplicates. ordered_unique_range promises the input is already sorted by the comparator and has unique keys. The library does not check i
+confidence	unsure
+grade	h
+continue	
+answer	Growth reallocates and moves the whole array when size()==capacity(). That is rare (31 times for 1M appends), so the mean hides it, but the worst insert copies ~MBs. Fix: reserve() the session's maximum size at startup (or build in bulk at the final size).
+confidence	unsure
+grade	h
+continue	
+answer	FM build(std::vector<std::pair<uint64_t,uint64_t>> v) { std::sort(v.begin(), v.end()); return FM(bc::ordered_unique_range, v.begin(), v.end()); }
+confidence	unsure
+continue	
+answer	Update existing entries in place (find + assign it->second; nothing moves). Collect the 10,000 new pairs, sort them, and merge once with `insert(ordered_unique_range, first, last)` (or rebuild the sequence and adopt it), never 10,000 single inserts into a 2M array.
+confidence	unsure
+grade	h
+continue	
+answer	boost::container::bad_alloc
+confidence	unsure
+continue	
+answer	Build in bulk (sorted + ordered_unique_range / adopt_sequence), which prevents O(N²) startup. reserve the session maximum at startup, which prevents reallocation spikes (1 ms max vs 26 ns mean). Update in place, append or batch-merge, and avoid front/middle inserts on the hot path, which prevents O(N) shifts per event. Use small_vector/static_vector when the size is small and bounded, which preven
+confidence	unsure
+grade	h
+continue	
+answer	small_vector with a small inline N (e.g. 2–4). The common case makes zero heap allocations, and rare bigger cases still work. Trade-off: a larger sizeof per map (inline storage), and the first overflow costs a heap allocation (a latency blip).
+confidence	unsure
+grade	h
+continue	
+answer	contiguous (vector-like); std::pair<K,T>; sorted; binary search.
+confidence	unsure
+grade	h
+continue	
+answer	after (with larger keys than) the slot; sizeof(value_type), i.e. sizeof(std::pair<K,T>).
+confidence	unsure
+grade	h
+continue	
+answer	assert(expr); NDEBUG; BOOST_DISABLE_ASSERTS.
+confidence	unsure
+grade	h
+continue	
+answer	One contiguous, sorted sequence of std::pair<K,T>; no nodes or per-element allocations. Cheap: ordered iteration over contiguous memory, O(1) nth()/index_of() random access (lookup by binary search is also faster than std::map's tree walk).
+confidence	unsure
+grade	h
+continue	
+answer	std::map does ~log2 N dependent pointer chases to scattered heap nodes (cache misses at large N). flat_map searches one array whose top probe levels stay cache-hot, with no node overhead. A hash table does O(1) expected probes rather than ~log2 N; boost::unordered_flat_map won every point-lookup row measured.
+confidence	unsure
+grade	h
+continue	
+answer	Yes, plausibly: updates near the back move only the few elements after the slot, so inserts and erases near the best price are cheap. With the best price at the front, every new best level shifts the whole side (O(N) bytes per update), which hurts the write path and the tail.
+confidence	unsure
+grade	h
+continue	
+answer	-O2 -DNDEBUG
+confidence	unsure
+continue	
+answer	flat_map keeps keys sorted, so the range query is lower_bound + a contiguous walk. A hash table has no order and would need a full scan or a second index. You give up point-lookup speed: the hash table was ~1.5–14× faster per lookup in the bench (e.g. 3.2 vs 19.5 ns, 6×, at N=4,096; 11.7 vs 162.8 ns, 14×, at N=1M).
+confidence	unsure
+grade	h
+continue	
+answer	Property: one contiguous, sorted array of pairs, which gives cache-friendly binary search and linear iteration. Same property: inserts and erases shift every element after the slot, and growth reallocates and moves everything (O(N) bytes). Build check: compile with -DNDEBUG (or BOOST_DISABLE_ASSERTS), otherwise Boost's BOOST_ASSERT checks run inside the search loop.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Measured at N=1M: direct index about 3.3 ns, unordered_flat_map about 14 ns, flat_map about 115 ns, i.e. direct is ~4x faster than the hash and ~35x faster than flat_map (bench/results/median/direct_index.ndebug.txt; flat_map ranged 113–124 over 5 runs). Dense keys are an array index. Do not search for what you can compute. CONCEPT L4C1.
+confidence	unsure
+continue	
+answer	~10 ms (about 9.6 ms measured, 9.35–9.84 over 5 runs; 17 rehashes). Each rehash moves every element into a new bucket array. With `reserve(N)` first, the max was only ~5 µs (4.0–6.9 µs over 5 runs; noise, no rehash). CONCEPT L4C2.
+confidence	unsure
+continue	
+answer	~100 ns (about 94 vs 497 ns measured: ~5.3x; 5-run ranges 94–97 and 491–511). The layout turns scattered probes into predictable, prefetchable ones. CONCEPT L4C3.
+confidence	unsure
+continue	
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+answer	directly; rehash (growth); cannot; reserve(expected max) before the hot path.
+confidence	unsure
+grade	h
+continue	
+answer	2k; 2k+1; `2*k + (b[k] < x)`.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Direct-indexed array: keys are dense small integers. Linear scan over a tiny array: very small N (here only 32-byte keys, N ≤ 16). boost::unordered_flat_map: point lookups only, no order needed (fastest at every N measured; reserve to avoid rehash spikes); unordered_node_map if references must survive rehashing. Eytzinger (or B-tree) layout: large, mostly static sorted sets (≈5× faster than binary
+confidence	unsure
+grade	h
+continue	
+answer	const Config* find_cfg(const std::vector<Config>& t, uint32_t id) { return id < t.size() ? &t[id] : nullptr; }
+confidence	unsure
+continue	
+answer	Write-heavy hot path, especially with random-position inserts and erases (O(N) shifts). Large N combined with frequent writes. Stable references, pointers or iterators are needed across mutations. Only point lookups are needed, with no order or ranges (a hash table or direct index is faster).
+confidence	unsure
+grade	h
+continue	
+answer	h.reserve(1000000);
+confidence	unsure
+continue	
+answer	A static Eytzinger (or B-tree) layout, or a hash set: built once per day off the hot path. Eytzinger turns ~24 dependent probes (most of them cache misses at this size) into prefetchable, branch-free probes (≈5× faster than binary search at 16M here). A hash set would avoid the log N probes entirely if no order is needed. Cost: rebuild on every update (the layout is static), plus extra code to mai
+confidence	unsure
+grade	h
+continue	

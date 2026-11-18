@@ -1,0 +1,1 @@
+std::size_t s = (off_ + align - 1) & ~(align - 1); if (s + bytes > cap_) throw std::bad_alloc(); off_ = s + bytes; return base_ + s;

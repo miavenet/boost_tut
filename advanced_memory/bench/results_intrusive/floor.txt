@@ -1,0 +1,7 @@
+machine: Darwin arm64 Apple M1 Max, Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2 -DNDEBUG
+load: 3.69 5.90 9.93   time machine: Copying
+timer floor (empty timed region)             n=400000  mean=    21 p50=    0 p99=   42 p99.9=    42 max=   16500 ns  faults=0
+timer floor (empty timed region)             n=400000  mean=    21 p50=    0 p99=   42 p99.9=    83 max=    4708 ns  faults=0
+timer floor (empty timed region)             n=400000  mean=    21 p50=    0 p99=   42 p99.9=    42 max=    7625 ns  faults=0
+timer floor (empty timed region)             n=400000  mean=    21 p50=    0 p99=   42 p99.9=    42 max=    5958 ns  faults=0
+timer floor (empty timed region)             n=400000  mean=    21 p50=    0 p99=   42 p99.9=    42 max=    7167 ns  faults=0

@@ -1,0 +1,7 @@
+bool set_cl_ord_id(Store& s, std::uint64_t id, std::uint32_t v) {
+    auto& ix = s.get<0>();
+    auto it = ix.find(id);
+    if (it == ix.end()) return false;
+    std::uint32_t old = it->cl_ord_id;
+    return ix.modify(it, [v](Order& o) { o.cl_ord_id = v; }, [old](Order& o) { o.cl_ord_id = old; });
+}

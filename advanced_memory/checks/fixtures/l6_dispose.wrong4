@@ -1,0 +1,1 @@
+for (auto it = lvl.begin(); it != lvl.end();) { Order* o = &*it; it = lvl.erase(it); pool.destroy(o); }

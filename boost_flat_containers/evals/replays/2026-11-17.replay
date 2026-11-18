@@ -1,0 +1,112 @@
+answer	160000
+confidence	sure
+continue	
+answer	contiguous (vector-like); std::pair<K,T>; sorted; binary search.
+confidence	unsure
+grade	h
+continue	
+answer	after (with larger keys than) the slot; sizeof(value_type), i.e. sizeof(std::pair<K,T>).
+confidence	unsure
+grade	h
+continue	
+answer	assert(expr); NDEBUG; BOOST_DISABLE_ASSERTS.
+confidence	unsure
+grade	h
+continue	
+answer	One contiguous, sorted sequence of std::pair<K,T>; no nodes or per-element allocations. Cheap: ordered iteration over contiguous memory, O(1) nth()/index_of() random access (lookup by binary search is also faster than std::map's tree walk).
+confidence	unsure
+grade	h
+continue	
+answer	std::map does ~log2 N dependent pointer chases to scattered heap nodes (cache misses at large N). flat_map searches one array whose top probe levels stay cache-hot, with no node overhead. A hash table does O(1) expected probes rather than ~log2 N; boost::unordered_flat_map won every point-lookup row measured.
+confidence	unsure
+grade	h
+continue	
+answer	Yes, plausibly: updates near the back move only the few elements after the slot, so inserts and erases near the best price are cheap. With the best price at the front, every new best level shifts the whole side (O(N) bytes per update), which hurts the write path and the tail.
+confidence	unsure
+grade	h
+continue	
+answer	-O2 -DNDEBUG
+confidence	unsure
+continue	
+answer	flat_map keeps keys sorted, so the range query is lower_bound + a contiguous walk. A hash table has no order and would need a full scan or a second index. You give up point-lookup speed: the hash table was ~1.5–14× faster per lookup in the bench (e.g. 3.2 vs 19.5 ns, 6×, at N=4,096; 11.7 vs 162.8 ns, 14×, at N=1M).
+confidence	unsure
+grade	h
+continue	
+answer	Property: one contiguous, sorted array of pairs, which gives cache-friendly binary search and linear iteration. Same property: inserts and erases shift every element after the slot, and growth reallocates and moves everything (O(N) bytes). Build check: compile with -DNDEBUG (or BOOST_DISABLE_ASSERTS), otherwise Boost's BOOST_ASSERT checks run inside the search loop.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	A reports heap-use-after-free: the array was reallocated and lim points into the freed block. B reports nothing and prints limit 2 instead of 2000. lim still points at slot 1, which now holds key 2 after the shift. Silent wrong data is the worse bug. CONCEPT L2C1.
+confidence	unsure
+continue	
+answer	Boost: yes. value_type is std::pair<int,int> and the key is not const. std::map: no (pair<const int,int>). std::flat_map: no (the reference is pair<const int&, int&>). CONCEPT L2C2.
+confidence	unsure
+continue	
+answer	Two: a keys container and a mapped-values container, kept index-aligned. `auto& p = *it` does NOT compile, because `*it` returns a prvalue proxy `pair<const K&, T&>`. CONCEPT L2C3.
+confidence	unsure
+continue	
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+answer	use-after-free (dangling into a freed block); different element; reallocation (first case).
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<const int&, double&>; std::move(s).extract().
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<Key,T> with a non-const key; move-assign; movable (preferably nothrow-movable).
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Insert/emplace (shift, and reallocation when full), erase (shift of elements at/after the erased key), and reserve/growth (reallocation). std::map allocates each element as its own node and never moves it, so references stay valid until that element is erased.
+confidence	unsure
+grade	h
+continue	
+answer	The array is no longer sorted, so binary search returns wrong results, even for keys that were not changed. std::map has node handles (extract(key)/insert(node)) and stable references. A flat_map has neither (and needs movable element types).
+confidence	unsure
+grade	h
+continue	
+answer	Boost owns one sequence of pair<K,T>; std adapts two containers (keys, values). Consequence: std's search reads only the keys array, which should mean fewer cache lines per probe. In the bench std::flat_map was ~20–25% faster at 1M with 8-byte keys, but larger values slowed it about as much as Boost (+18% vs +22%), and with 32-byte keys at 1M it was slower, so measure. Boost value_type/reference i
+confidence	unsure
+grade	h
+continue	
+answer	long limit_after_listing(RiskTable& t) { add_listings(t); return t.find(200)->second.max_qty; }
+confidence	unsure
+continue	
+answer	Any insert/erase in the flat_map moves Orders, so the queue's pointers dangle (realloc) or silently point at other orders (shift). Fixes: store keys (OrderId) in the queue and re-find; or keep Orders in stable storage (node container / pool / std::deque with no middle erase) and index them; or use a node-based map when pointer stability is required.
+confidence	unsure
+grade	h
+continue	
+answer	auto c = std::move(s).extract();\nfor (auto& v : c.values) v = 0.0;\ns.replace(std::move(c.keys), std::move(c.values));
+confidence	unsure
+continue	
+answer	std::flat_map (separate keys array): contains() reads only the 16-byte keys, so the search touches fewer cache lines than striding over 272-byte pairs. Before committing, measure your actual shapes (the bench showed std::flat_map ~24% ahead at 8B keys / 64B values at 1M, but also ~21% ahead at 8B values, so the bigger value added no extra gain, and a loss at 32B keys / 1M: 464.8 vs 334.0 ns). You 
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Same decision: elements live by value in one array that the container shifts with move-assignment. That move-assignment needs a non-const key, and it moves elements under your references. std::flat_map also shifts elements (so references and iterators still dangle), but its proxy reference exposes the key as const, so you cannot break the ordering through an iterator.
+confidence	unsure
+grade	h
+continue	

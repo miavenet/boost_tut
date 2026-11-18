@@ -1,0 +1,17 @@
+sizeof(Order) = 40, sizeof(void*) = 8, N = 100000
+-- one index --
+ordered_unique                     node=  64 B  allocs/elem=1.00  live bytes/elem=  64.0
+hashed_unique                      node=  56 B  allocs/elem=1.00  live bytes/elem=  71.7
+sequenced                          node=  56 B  allocs/elem=1.00  live bytes/elem=  56.0
+random_access                      node=  48 B  allocs/elem=1.00  live bytes/elem=  56.5
+ranked_unique                      node=  72 B  allocs/elem=1.00  live bytes/elem=  72.0
+-- several indices --
+hashed + ordered                   node=  80 B  allocs/elem=1.00  live bytes/elem=  95.7
+hashed + ordered + hashed          node=  96 B  allocs/elem=1.00  live bytes/elem= 127.5
+ordered + ordered + ranked         node= 120 B  allocs/elem=1.00  live bytes/elem= 120.0
+-- std:: for comparison (one access path each) --
+std::map<id,Order>                 node=  80 B  allocs/elem=1.00  live bytes/elem=  80.0
+std::unordered_map<id,Order>       node=  64 B  allocs/elem=1.00  live bytes/elem=  72.2
+std::list<Order>                   node=  56 B  allocs/elem=1.00  live bytes/elem=  56.0
+-- hand-rolled 3-container store (Lab 1a) vs MI with the same 3 paths --
+hand-rolled (3 containers)         allocs/elem=3.00  live bytes/elem= 176.5

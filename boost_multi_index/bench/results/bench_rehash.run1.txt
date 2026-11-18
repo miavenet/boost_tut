@@ -1,0 +1,8 @@
+N=1000000 single inserts, timed one at a time (timer tick ~41 ns)
+MI hashed_unique, no reserve             n=1000000  mean=    54.5  p50=    42.0  p99=    84.0  p99.9=   1333.0  max= 8231125.0 ns  >100us:6
+MI hashed_unique, reserve(N)             n=1000000  mean=    38.3  p50=    42.0  p99=    84.0  p99.9=   2084.0  max=   42167.0 ns  >100us:0
+MI hashed_unique, reserve + pmr arena    n=1000000  mean=    27.6  p50=    41.0  p99=    42.0  p99.9=    167.0  max=   29750.0 ns  >100us:0
+std::unordered_map, no reserve           n=1000000  mean=    49.6  p50=    41.0  p99=    84.0  p99.9=   1417.0  max= 5895417.0 ns  >100us:6
+std::unordered_map, reserve(N)           n=1000000  mean=    39.1  p50=    42.0  p99=    84.0  p99.9=   1417.0  max=   44750.0 ns  >100us:0
+boost::unordered_flat_map, no reserve    n=1000000  mean=    55.8  p50=    41.0  p99=   125.0  p99.9=   1541.0  max=13691625.0 ns  >100us:8
+boost::unordered_flat_map, reserve(N)    n=1000000  mean=    27.7  p50=    41.0  p99=    84.0  p99.9=    167.0  max=   26583.0 ns  >100us:0

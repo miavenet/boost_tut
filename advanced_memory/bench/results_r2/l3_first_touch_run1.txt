@@ -1,0 +1,6 @@
+machine: Darwin arm64 (Apple M1 Max), Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2, shared machine (not an isolated core)
+run 1: labs/build/l3_first_touch
+page size here: 16384 bytes, region: 64 MiB = 4096 pages
+pass 1:   4096 page faults,     1062 ns per page touched
+pass 2:      0 page faults,      124 ns per page touched
+mlock(64 MiB) returned 0 (pages now locked in RAM)

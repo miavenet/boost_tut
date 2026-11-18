@@ -1,0 +1,128 @@
+answer	P M B T H
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	before
+confidence	0.8
+continue	
+answer	hft::multi_index<Order, Indices>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::string
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	arena.seal();
+confidence	0.8
+continue	
+answer	reserve
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	hft::map<long, Order>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+stretch	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	no-op ; release
+confidence	0.8
+continue	
+answer	do_is_equal
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	struct Counters { alignas(128) std::atomic<long> a; alignas(128) std::atomic<long> b; };
+confidence	0.8
+continue	
+answer	auto* n = static_cast<node*>(p); n->next = head_; head_ = n;
+confidence	0.8
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+answer	safe_link
+confidence	0.8
+continue	
+continue	
+answer	return o.send_hook.is_linked();
+confidence	0.8
+continue	

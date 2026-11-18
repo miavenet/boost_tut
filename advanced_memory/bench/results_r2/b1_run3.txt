@@ -1,0 +1,36 @@
+machine: Darwin arm64 (Apple M1 Max), Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2, shared machine (not an isolated core)
+run 3, 2026-11-14 10:07:44, load: 3.86 3.92 4.05
+hft::pin_this_thread(0): not pinned (not Linux, or refused)
+== NODE: std::map churn (erase+insert per sample) ==
+(a) std::map default                         n=200000  mean=   397 p50=  375 p99=  583 p99.9=  2042 max=   25583 ns  faults=340
+(b) pmr::map monotonic                       n=200000  mean=   383 p50=  375 p99=  625 p99.9=  2333 max=   29167 ns  faults=1274
+(c) pmr::map pool->monotonic                 n=200000  mean=   346 p50=  333 p99=  542 p99.9=   667 max=    9250 ns  faults=0
+(d) pmr::map full hierarchy+tripwire         n=200000  mean=   360 p50=  334 p99=  625 p99.9=   750 max=   12375 ns  faults=0
+(e) hft::map                                 n=200000  mean=   377 p50=  334 p99=  708 p99.9=   834 max=    8666 ns  faults=0
+== NODE: unordered_map / unordered_node_map / multi_index churn ==
+(a) std::unordered_map default               n=200000  mean=   140 p50=  125 p99=  292 p99.9=   375 max=    9334 ns  faults=0
+(e) hft::unordered_map                       n=200000  mean=    82 p50=   83 p99=  167 p99.9=   250 max=    8625 ns  faults=0
+(a) boost::unordered_node_map default        n=200000  mean=    86 p50=   83 p99=  167 p99.9=  1375 max=   28583 ns  faults=243
+(e) hft::unordered_node_map                  n=200000  mean=    38 p50=   42 p99=   84 p99.9=   125 max=    7292 ns  faults=0
+(a) multi_index default                      n=200000  mean=   377 p50=  375 p99=  500 p99.9=   625 max=   13666 ns  faults=0
+(e) hft::multi_index                         n=200000  mean=   330 p50=  333 p99=  459 p99.9=   542 max=   13667 ns  faults=0
+== FLAT: boost::container::flat_map build, ascending keys ==
+(a) flat_map default, no reserve             n=100000  mean=    57 p50=   42 p99=   84 p99.9=  1250 max=  386542 ns  faults=1012
+(a) flat_map default, reserve                n=100000  mean=    44 p50=   42 p99=   84 p99.9=   125 max=   11250 ns  faults=0
+(b) flat_map monotonic, no reserve           n=100000  mean=    59 p50=   42 p99=   84 p99.9=  1417 max=  430750 ns  faults=897
+(c) flat_map pool->monotonic, no reserve     n=100000  mean=    50 p50=   42 p99=   84 p99.9=   167 max=  417375 ns  faults=288
+(d) flat_map hierarchy+tripwire, reserve     n=100000  mean=    44 p50=   42 p99=   84 p99.9=  1042 max=    2959 ns  faults=0
+(e) hft::flat_map, reserve                   n=100000  mean=    44 p50=   42 p99=   84 p99.9=   917 max=    2625 ns  faults=0
+== FLAT: unordered_flat_map build / vector push_back ==
+(a) unordered_flat_map default, no reserve   n=100000  mean=    39 p50=    0 p99=   42 p99.9=    83 max= 1228459 ns  faults=299
+(a) unordered_flat_map default, reserve      n=100000  mean=    21 p50=    0 p99=   42 p99.9=    42 max=    6167 ns  faults=0
+(e) hft::unordered_flat_map, reserve         n=100000  mean=    22 p50=    0 p99=   42 p99.9=  1000 max=    3250 ns  faults=0
+(a) std::vector default, no reserve          n=100000  mean=    24 p50=    0 p99=   42 p99.9=    83 max=  215833 ns  faults=78
+(a) std::vector default, reserve             n=100000  mean=    19 p50=    0 p99=   42 p99.9=    42 max=    5583 ns  faults=0
+(e) hft::vector, reserve                     n=100000  mean=    20 p50=    0 p99=   42 p99.9=    42 max=    2333 ns  faults=0
+== STRING: one 100-char string built and destroyed per sample ==
+(a) std::string default                      n=200000  mean=    42 p50=   42 p99=   83 p99.9=    84 max=    5833 ns  faults=2
+(e) hft::string                              n=200000  mean=    31 p50=   41 p99=   42 p99.9=    42 max=    2375 ns  faults=0
+== SCRATCH: per-message temporaries (vector<int> of 32 + 100-char string) ==
+(a) std::vector + std::string default        n=200000  mean=   198 p50=  208 p99=  250 p99.9=   292 max=    4500 ns  faults=7
+(e) hft::scratch + reset() per message       n=200000  mean=   134 p50=  125 p99=  167 p99.9=   209 max=    7042 ns  faults=0

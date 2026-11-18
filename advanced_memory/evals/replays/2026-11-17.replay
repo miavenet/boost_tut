@@ -1,0 +1,117 @@
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	reserve
+confidence	0.8
+continue	
+answer	arena.seal();
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	hft::map<long, Order>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+stretch	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	no-op ; release
+confidence	0.8
+continue	
+answer	do_is_equal
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+answer	std::pmr::null_memory_resource()
+confidence	0.8
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::monotonic_buffer_resource mono(buf, sizeof buf, std::pmr::null_memory_resource()); std::pmr::unsynchronized_pool_resource pool(&mono);
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+answer	return this == &other;
+confidence	0.8
+continue	
+continue	
+answer	std::size_t s = (off_ + align - 1) & ~(align - 1); if (s + bytes > cap_) throw std::bad_alloc(); off_ = s + bytes; return base_ + s;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	

@@ -1,0 +1,57 @@
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	b.clients[o->client].erase(Client::s_iterator_to(*o));
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	Order* o = b.ids.find(id)->second;\nb.levels[o->px].erase(Level::s_iterator_to(*o));\nb.clients[o->client].erase(Client::s_iterator_to(*o));\nb.ids.erase(id);\nb.orders.destroy(o);
+confidence	0.8
+continue	
+answer	return o.send_hook.is_linked() && o.venue == v;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	

@@ -1,0 +1,16 @@
+[built NDEBUG defined: assertions OFF]
+Apple M1 Max, Apple clang 21, -O2, Boost 1.90. ns per single op (timer tick ~41.7 ns).
+
+case                                     p50       p99     p99.9         max      mean
+flat_map append, no reserve             41.0      42.0     208.0    984833.0      25.9
+   ^ 31 reallocations while growing to 1048576 elements
+flat_map append, reserve(N) first       41.0      42.0      42.0      4667.0      22.3
+flat_map 10k: insert at FRONT         5459.0    5625.0    5750.0    170917.0    5485.7
+flat_map 10k: insert at BACK            42.0      83.0      84.0      2500.0      41.5
+flat_map 10k: insert at RANDOM pos    2584.0    5500.0    5583.0     25208.0    2654.4
+flat_map 10k: erase at FRONT          2708.0    2792.0    2834.0    109375.0    2698.1
+flat_map 10k: erase at BACK             42.0      42.0      42.0     20083.0      33.0
+std::map 10k: insert+erase RANDOM      208.0     250.0     292.0     11625.0     192.2
+unordered_flat_map insert, no reserve      41.0      83.0     125.0   9352041.0      37.6
+   ^ 17 rehashes while growing to 1048576 elements
+unordered_flat_map insert, reserve(N)       0.0      42.0      83.0      4042.0      20.1

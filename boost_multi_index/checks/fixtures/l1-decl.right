@@ -1,0 +1,3 @@
+using Store = multi_index_container<Order, indexed_by<
+    hashed_unique<key<&Order::id>>,
+    ordered_non_unique<key<&Order::price>>>>;

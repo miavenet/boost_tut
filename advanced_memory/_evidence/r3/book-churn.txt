@@ -1,0 +1,11 @@
+# book-churn-full: book<flat>(50,000) filled to 50,000 random ids, arena sealed, 200,000 cancel+add at constant size — 2026-11-14 10:46:49
+## pre-fix header (reserve 1x)
+hft::slab: destroyed with 1 live object(s); unlink and destroy() them first
+filled: 50000 live of capacity 50000
+std::bad_alloc under seal() at churn op 21508: the id map reallocated
+rc=134
+## fixed header (reserve 2x)
+filled: 50000 live of capacity 50000
+id map buckets: 122879 before churn, 122879 after
+ok: 200000 cancel+add at 50000/50000 live, sealed arena, no reallocation
+rc=0

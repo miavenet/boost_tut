@@ -1,0 +1,1 @@
+std::pmr::null_memory_resource()

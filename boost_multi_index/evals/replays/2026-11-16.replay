@@ -1,0 +1,58 @@
+continue	
+answer	my answer to M1-P1 from memory
+confidence	
+continue	
+answer	my answer to M1-P2 from memory
+confidence	
+continue	
+continue	
+continue	
+elaborate	my own words: done and compared with the key
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+elaborate	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+answer	1 node per element, 3 headers (one per index)
+confidence	
+continue	
+answer	hashed_unique<member<Order, std::uint64_t, &Order::id>>, ordered_non_unique<member<Order, std::int64_t, &Order::price>>
+confidence	
+continue	
+continue	
+answer	my answer to M1-Q1 from memory
+confidence	
+grade	p
+continue	
+answer	using Store = multi_index_container<Order, indexed_by<\n    hashed_unique<key<&Order::id>>,\n    ordered_non_unique<key<&Order::price>>>>;
+confidence	0.9
+continue	
+answer	using Instruments = multi_index_container<Instrument, indexed_by<\n    hashed_unique<member<Instrument, std::string, &Instrument::symbol>>,\n    ordered_unique<composite_key<Instrument,\n        member<Instrument, int, &Instrument::exchange>,\n        member<Instrument, std::uint32_t, &Instrument::local_id>>>>>;
+confidence	
+continue	
+answer	4,000,000 allocations/s hand-rolled vs 2,000,000/s with multi_index
+confidence	sure
+continue	
+answer	my answer to M1-Q5 from memory
+confidence	
+grade	h
+continue	
+continue	
+answer	my answer to M1-INT from memory
+confidence	
+grade	h
+continue	
+answer	8,000,000 allocations/s hand-rolled vs 2,000,000/s with multi_index
+confidence	
+continue	

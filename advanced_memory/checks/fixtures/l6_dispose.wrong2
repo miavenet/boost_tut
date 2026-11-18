@@ -1,0 +1,1 @@
+while (!lvl.empty()) { auto* o = &lvl.front(); lvl.pop_front(); pool.destroy(o); }

@@ -1,0 +1,77 @@
+continue	
+answer	Measured here (bench/results/median/lookup_crossover.ndebug.txt, N=64, p50),\n    fastest to slowest: boost::unordered_flat_map (about 3 ns), std::unordered_map (about 6),\n    flat_map (about 8), then linear scan and std::map in a near-tie (about 22 and 25,\n    within run-to-run spread; accept either order for those two). Key idea, not the\n    digits: hash < sorted array < tree. If you put flat_map
+confidence	unsure
+continue	
+answer	About 5 µs (p50 5,459 ns measured). Every one of the 10,000 pairs (16 bytes\n    each) shifts one slot right. A `std::map` insert+erase pair at the same\n    size took ~208 ns. CONCEPT L1C2.
+confidence	unsure
+continue	
+answer	About 4× (80.2 → 22.0 ns per lookup in labs/l1_ndebug.cpp). Boost.Container\n    runs `BOOST_ASSERT` checks inside its iterators, and those are plain\n    `assert()` calls unless `NDEBUG` is defined. CONCEPT L1C4.
+confidence	unsure
+continue	
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+continue	
+answer	contiguous (vector-like); std::pair<K,T>; sorted; binary search.
+confidence	unsure
+grade	h
+continue	
+answer	after (with larger keys than) the slot; sizeof(value_type), i.e. sizeof(std::pair<K,T>).
+confidence	unsure
+grade	h
+continue	
+answer	assert(expr); NDEBUG; BOOST_DISABLE_ASSERTS.
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	One contiguous, sorted sequence of std::pair<K,T>; no nodes or per-element allocations. Cheap: ordered iteration over contiguous memory, O(1) nth()/index_of() random access (lookup by binary search is also faster than std::map's tree walk).
+confidence	unsure
+grade	h
+continue	
+answer	flat_map does fewer comparisons than std::map
+confidence	unsure
+grade	m
+continue	
+answer	80000
+confidence	sure
+continue	
+answer	Yes, plausibly: updates near the back move only the few elements after the slot, so inserts and erases near the best price are cheap. With the best price at the front, every new best level shifts the whole side (O(N) bytes per update), which hurts the write path and the tail.
+confidence	unsure
+grade	h
+continue	
+answer	-O2 -DNDEBUG
+confidence	unsure
+continue	
+answer	flat_map keeps keys sorted, so the range query is lower_bound + a contiguous walk. A hash table has no order and would need a full scan or a second index. You give up point-lookup speed: the hash table was ~1.5–14× faster per lookup in the bench (e.g. 3.2 vs 19.5 ns, 6×, at N=4,096; 11.7 vs 162.8 ns, 14×, at N=1M).
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Property: one contiguous, sorted array of pairs, which gives cache-friendly binary search and linear iteration. Same property: inserts and erases shift every element after the slot, and growth reallocates and moves everything (O(N) bytes). Build check: compile with -DNDEBUG (or BOOST_DISABLE_ASSERTS), otherwise Boost's BOOST_ASSERT checks run inside the search loop.
+confidence	unsure
+grade	h
+continue	
+answer	160000
+confidence	sure
+continue	
+answer	std::map does ~log2 N dependent pointer chases to scattered heap nodes (cache misses at large N). flat_map searches one array whose top probe levels stay cache-hot, with no node overhead. A hash table does O(1) expected probes rather than ~log2 N; boost::unordered_flat_map won every point-lookup row measured.
+confidence	unsure
+grade	h
+continue	

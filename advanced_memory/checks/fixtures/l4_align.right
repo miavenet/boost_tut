@@ -1,0 +1,1 @@
+struct Counters { alignas(128) std::atomic<long> a; alignas(128) std::atomic<long> b; };

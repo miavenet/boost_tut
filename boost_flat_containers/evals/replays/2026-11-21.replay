@@ -1,0 +1,53 @@
+answer	reallocation spike; O(N) shift of the middle insert; small side (static_vector-backed) table.
+confidence	unsure
+grade	h
+continue	
+answer	Are keys dense ints I control (or can I remap them once)? → direct array. Do I only need point lookups? → boost::unordered_flat_map, reserved (unordered_node_map if references must be stable). Do I need order or ranges, with read-mostly use and small/medium N? → flat_map (bulk-built, reserved, -DNDEBUG; small_vector/static_vector if tiny and bounded). Is the set huge and static? → Eytzinger/B-tree
+confidence	unsure
+grade	h
+continue	
+answer	risk.reserve(risk.size() + kMaxNewListings);
+confidence	unsure
+continue	
+answer	adopt_sequence; ordered_unique_range.
+confidence	unsure
+grade	h
+continue	
+answer	The remaining spike is the O(N) shift of a middle insert (~1.2 MB moved), not allocation. More capacity does not change how many elements move. Fixes: stage new listings in a small side table and merge off the hot path (measured max ~9.5 µs, 5–13 over 5 runs; mean +~24 ns), or rebuild the table off-thread and swap a pointer. Or choose a structure with O(1)/O(log N) insert for this table (hash map,
+confidence	unsure
+grade	h
+continue	
+answer	size(); capacity(); 60 (growth_factor_60); reserve(expected maximum).
+confidence	unsure
+grade	h
+continue	
+answer	moves to heap storage and keeps working (one allocation); throws boost::container::bad_alloc and never allocates.
+confidence	unsure
+grade	h
+continue	
+answer	Sort + `flat_map(ordered_unique_range, first, last)`; sort a `sequence_type` + `adopt_sequence(ordered_unique_range, std::move(seq))`; plain range constructor `flat_map(first, last)` (sorts for you). Also `adopt_sequence(std::move(seq))`, which sorts and removes duplicates. ordered_unique_range promises the input is already sorted by the comparator and has unique keys. The library does not check i
+confidence	unsure
+grade	h
+continue	
+answer	Growth reallocates and moves the whole array when size()==capacity(). That is rare (31 times for 1M appends), so the mean hides it, but the worst insert copies ~MBs. Fix: reserve() the session's maximum size at startup (or build in bulk at the final size).
+confidence	unsure
+grade	h
+continue	
+answer	FM build(std::vector<std::pair<uint64_t,uint64_t>> v) { std::sort(v.begin(), v.end()); return FM(bc::ordered_unique_range, v.begin(), v.end()); }
+confidence	unsure
+continue	
+answer	Update existing entries in place (find + assign it->second; nothing moves). Collect the 10,000 new pairs, sort them, and merge once with `insert(ordered_unique_range, first, last)` (or rebuild the sequence and adopt it), never 10,000 single inserts into a 2M array.
+confidence	unsure
+grade	h
+continue	
+answer	boost::container::bad_alloc
+confidence	unsure
+continue	
+answer	Build in bulk (sorted + ordered_unique_range / adopt_sequence), which prevents O(N²) startup. reserve the session maximum at startup, which prevents reallocation spikes (1 ms max vs 26 ns mean). Update in place, append or batch-merge, and avoid front/middle inserts on the hot path, which prevents O(N) shifts per event. Use small_vector/static_vector when the size is small and bounded, which preven
+confidence	unsure
+grade	h
+continue	
+answer	small_vector with a small inline N (e.g. 2–4). The common case makes zero heap allocations, and rare bigger cases still work. Trade-off: a larger sizeof per map (inline storage), and the first overflow costs a heap allocation (a latency blip).
+confidence	unsure
+grade	h
+continue	

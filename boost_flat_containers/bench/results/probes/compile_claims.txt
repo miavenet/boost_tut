@@ -1,0 +1,13 @@
+ok   [compiles] Boost flat_map: it->first = 99 
+ok   [fails] std::map: it->first = 99 :: cannot assign to non-static data member 'first' with const-qualified type 'const int'
+ok   [fails] std::flat_map: it->first = 99 :: cannot assign to non-static data member 'first' with const-qualified type 'const int &'
+ok   [fails] std::flat_map: auto& p = *begin() :: non-const lvalue reference to type '_If<...>' cannot bind to a temporary of type '_If<...>'
+ok   [compiles] std::flat_map: auto p = *begin() 
+ok   [fails] std::flat_map: reserve() :: no member named 'reserve' in 'std::flat_map<int, double>'
+ok   [fails] std::flat_map: extract() on lvalue :: 'this' argument to member function 'extract' is an lvalue, but function has rvalue ref-qualifier
+ok   [compiles] std::flat_map: std::move(s).extract() 
+ok   [fails] Boost flat_map: extract(key) node handle :: no member named 'extract' in 'boost::container::flat_map<int, int>'
+ok   [compiles] std::map: extract(key) node handle 
+ok   [fails] Boost flat_map<int, NoMove> emplace :: call to deleted constructor of 'NoMove'
+ok   [compiles] std::map<int, NoMove> emplace 
+compile-claim failures: 0

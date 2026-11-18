@@ -1,0 +1,56 @@
+# card<TAB>accept|reject<TAB>answer   (graded with the card's real AcceptIf/RejectIf; see ../selftest.sh)
+01-C2	accept	reserve
+01-C2	accept	`reserve`
+01-C2	accept	reserve()
+01-C2	accept	reserve(n)
+01-C2	accept	v.reserve(max_n)
+01-C2	accept	p->reserve(n)
+01-C2	accept	m.reserve(100000)
+01-C2	reject	reserve(0)
+01-C2	reject	reserve(1)
+01-C2	reject	resize
+01-C2	reject	shrink_to_fit
+01-C2	reject	clear
+01-C2	reject	I would reserve it later
+02-C1	accept	no-op ; release
+02-C1	accept	no-op; deallocate() does nothing until release()
+02-C1	accept	nothing, release
+02-C1	reject	not a no-op; release
+02-C1	reject	it frees the memory immediately; release
+02-C1	reject	no-op
+02-C1	reject	free; delete
+04-C1	accept	before
+04-C1	accept	Before.
+04-C1	reject	after
+04-C1	reject	before and after
+04-C1	reject	inside
+# lessons 05-07 completion cards: adversarial answers
+05-C1	accept	safe_link
+05-C1	accept	bi::safe_link
+05-C1	reject	not normal_link, safe_link
+05-C1	reject	normal_link
+05-C1	reject	auto_unlink
+06-C1	accept	unlinked
+06-C1	accept	detached
+06-C1	accept	erased.
+06-C1	reject	linked to
+06-C1	reject	inserted
+07-C1	accept	ordered
+07-C1	accept	ordered_free
+07-C1	reject	unordered
+02-C3	accept	do_is_equal
+02-C3	accept	`do_is_equal`
+02-C3	accept	do_is_equal(other)
+02-C3	accept	bool do_is_equal(const memory_resource& other) const noexcept
+02-C3	reject	is_equal
+02-C3	reject	operator==
+02-C3	reject	do_release
+02-C3	reject	do_is_equal is not one of them
+02-C3	accept	bool do_is_equal(const memory_resource& other) const noexcept override
+02-C3	accept	bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override;
+02-C3	accept	virtual bool do_is_equal(const memory_resource&) const noexcept;
+02-C3	accept	do_is_equal()
+02-C3	reject	DO_IS_EQUAL
+02-C3	reject	do_is_equal(int, int)
+02-C3	reject	do_is_equal(int x)
+02-C3	reject	bool do_is_equal(memory_resource other) const

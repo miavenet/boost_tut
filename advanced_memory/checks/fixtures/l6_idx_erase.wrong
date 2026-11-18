@@ -1,0 +1,4 @@
+ilink& l = base_[i].*M;
+if (l.prev != nil) (base_[l.prev].*M).next = l.next;
+if (l.next != nil) (base_[l.next].*M).prev = l.prev;
+l.prev = l.next = nil;

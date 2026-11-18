@@ -1,0 +1,85 @@
+answer	8,000,000 allocations/s hand-rolled vs 2,000,000/s with multi_index
+confidence	
+continue	
+answer	hashed_unique<member<Order, std::uint64_t, &Order::id>>, ordered_non_unique<member<Order, std::int64_t, &Order::price>>
+confidence	
+continue	
+answer	1 node per element, 3 headers (one per index)
+confidence	
+continue	
+answer	my answer to M1-Q1 from memory
+confidence	
+grade	h
+continue	
+answer	using Store = multi_index_container<Order, indexed_by<\n    hashed_unique<key<&Order::id>>,\n    ordered_non_unique<key<&Order::price>>>>;
+confidence	0.9
+continue	
+answer	my answer to M1-Q5 from memory
+confidence	
+grade	h
+continue	
+answer	using Instruments = multi_index_container<Instrument, indexed_by<\n    hashed_unique<member<Instrument, std::string, &Instrument::symbol>>,\n    ordered_unique<composite_key<Instrument,\n        member<Instrument, int, &Instrument::exchange>,\n        member<Instrument, std::uint32_t, &Instrument::local_id>>>>>;
+confidence	
+continue	
+answer	my answer to M1-INT from memory
+confidence	
+grade	h
+continue	
+continue	
+answer	my answer to M2-P1 from memory
+confidence	
+continue	
+answer	my answer to M2-P2 from memory
+confidence	
+continue	
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+elaborate	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+answer	my answer to M2-C1 from memory
+confidence	
+grade	h
+continue	
+answer	member<&Order::id>
+confidence	0.3
+continue	
+continue	
+answer	bool set_cl_ord_id(Store& s, std::uint64_t id, std::uint32_t v) {\n    auto& ix = s.get<0>();\n    auto it = ix.find(id);\n    if (it == ix.end()) return false;\n    std::uint32_t old = it->cl_ord_id;\n    return ix.modify(it, [v](Order& o) { o.cl_ord_id = v; }, [old](Order& o) { o.cl_ord_id = old; });\n}
+confidence	unsure
+continue	
+answer	int ahead(const Store& s, std::uint64_t id) {\n    auto it = s.project<ByBook>(s.get<ById>().find(id));\n    auto first = s.get<ByBook>().lower_bound(std::make_tuple(it->side, it->price));\n    return int(std::distance(first, it));\n}
+confidence	
+continue	
+answer	my answer to M2-Q3 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M2-Q4 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M2-Q5 from memory
+confidence	
+grade	h
+continue	
+continue	
+answer	my answer to M2-INT from memory
+confidence	
+grade	h
+continue	
+answer	key<&Order::id>
+confidence	
+continue	

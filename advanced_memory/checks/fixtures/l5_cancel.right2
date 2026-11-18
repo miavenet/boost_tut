@@ -1,0 +1,6 @@
+auto it = b.ids.find(id);
+Order& o = *it->second;
+b.levels[o.px].erase(b.levels[o.px].iterator_to(o));
+b.clients[o.client].erase(b.clients[o.client].iterator_to(o));
+b.ids.erase(it);
+b.orders.destroy(&o);

@@ -1,0 +1,2 @@
+auto d = [&](Order* o) { pool.destroy(o); };
+lvl.clear_and_dispose(d);

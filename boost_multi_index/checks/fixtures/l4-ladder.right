@@ -1,0 +1,4 @@
+int next_best_bid(const std::array<std::uint32_t, kTicks>& q, int from) {
+    for (int px = from; px >= 0; --px) if (q[px]) return px;
+    return -1;
+}

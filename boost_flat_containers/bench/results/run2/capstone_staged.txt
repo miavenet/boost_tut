@@ -1,0 +1,14 @@
+[NDEBUG defined: assertions OFF] orders=400000 new listings=100
+per-order ns: p50 125  p99 250  p99.9 541  max 4708  mean 109.7
+histogram (ns, log2 buckets):
+  <      64 ns :    6791 ############################
+  <     128 ns :  360811 ########################################
+  <     256 ns :   29706 ################################
+  <     512 ns :    2283 ########################
+  <    1024 ns :     376 ###################
+  <    2048 ns :      22 ##########
+  <    4096 ns :       8 #######
+  <    8192 ns :       3 ####
+lookups ok, misses=0, risk table size=100000 capacity=100000
+side table size=100 (merge it into the main table off the hot path)
+hot-path heap allocations: 0

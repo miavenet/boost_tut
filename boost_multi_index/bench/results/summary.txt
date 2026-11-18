@@ -1,0 +1,89 @@
+=== bench_lookup: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+-- 10000 live orders, ns per lookup (batch of 32) --
+  MI hashed_unique (n=10000)                 p50      16.9 [16.9..16.9]   p99      19.5 [18.2..19.5]
+  MI ordered_unique (n=10000)                p50      85.9 [85.9..85.9]   p99      93.8 [92.5..102.9]
+  std::unordered_map (n=10000)               p50      19.5 [19.5..19.5]   p99      22.2 [22.2..23.4]
+  boost::unordered_flat_map (n=10000)        p50      19.5 [19.5..20.8]   p99      22.2 [22.2..24.7]
+  dense vector<Order>[id] (n=10000)          p50       7.8 [7.8..7.8]   p99       9.1 [9.1..10.4]
+-- 4000000 live orders, ns per lookup (batch of 32) --
+  MI hashed_unique (n=4000000)               p50     237.0 [234.4..246.1]   p99     371.1 [369.8..376.3]
+  MI ordered_unique (n=4000000)              p50    1024.8 [938.8..1057.3]   p99    1373.7 [1237.0..1438.8]
+  std::unordered_map (n=4000000)             p50     287.8 [280.0..289.1]   p99     402.3 [328.1..412.8]
+  boost::unordered_flat_map (n=4000000)      p50     144.5 [143.2..147.1]   p99     261.7 [161.5..265.6]
+  dense vector<Order>[id] (n=4000000)        p50      92.4 [89.8..93.8]   p99     170.6 [112.0..212.2]
+=== bench_modify: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+-- N=100000 live orders, 3 indices, 100000 clients (1 orders
+  find only (baseline)                       p50       7.8 [7.8..13.0]   p99      20.9 [18.2..36.4]
+  modify qty (non-key)                       p50      96.4 [78.1..130.2]   p99     197.9 [140.6..304.7]
+  replace qty (non-key)                      p50      83.4 [75.6..98.9]   p99     140.6 [117.2..145.8]
+  modify price (key)                         p50     406.2 [276.1..429.7]   p99     635.4 [479.2..815.1]
+  replace price (key)                        p50     398.4 [270.9..424.5]   p99     507.8 [421.9..619.8]
+-- N=100000 live orders, 3 indices, 1000 clients (100 orders
+  find only (baseline)                       p50       7.8 [5.2..7.8]   p99      13.1 [7.8..18.2]
+  modify qty (non-key)                       p50    1171.9 [1112.0..1260.4]   p99    2000.0 [1804.7..2161.4]
+  replace qty (non-key)                      p50      80.7 [67.8..83.3]   p99     122.4 [106.8..138.0]
+  modify price (key)                         p50    1643.2 [1507.8..1820.3]   p99    3065.1 [2737.0..3937.5]
+  replace price (key)                        p50     406.2 [273.4..429.7]   p99     541.7 [427.1..622.4]
+-- N=100000 live orders, 3 indices, 64 clients (1562 orders 
+  find only (baseline)                       p50       7.8 [5.2..7.8]   p99      15.6 [10.4..18.2]
+  modify qty (non-key)                       p50   14239.6 [6794.2..18619.8]   p99   44656.2 [33140.6..48744.8]
+  replace qty (non-key)                      p50      85.9 [49.4..91.1]   p99     130.2 [67.7..153.7]
+  modify price (key)                         p50   17395.8 [6651.1..24388.0]   p99   41322.9 [20179.7..62205.7]
+  replace price (key)                        p50     265.6 [257.8..416.7]   p99     505.2 [294.2..661.4]
+=== bench_rehash: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+
+  MI hashed_unique, no reserve               p50      42.0 [42.0..42.0]   p99      84.0 [84.0..84.0]   max-of-runs 8671333 ns, >100us per run [6, 6, 6, 6, 6]
+  MI hashed_unique, reserve(N)               p50      42.0 [42.0..42.0]   p99      84.0 [84.0..84.0]   max-of-runs 42167 ns, >100us per run [0, 0, 0, 0, 0]
+  MI hashed_unique, reserve + pmr arena      p50      41.0 [41.0..41.0]   p99      42.0 [42.0..84.0]   max-of-runs 29750 ns, >100us per run [0, 0, 0, 0, 0]
+  std::unordered_map, no reserve             p50      41.0 [41.0..42.0]   p99      84.0 [84.0..125.0]   max-of-runs 10256375 ns, >100us per run [6, 6, 5, 6, 6]
+  std::unordered_map, reserve(N)             p50      42.0 [42.0..42.0]   p99      84.0 [84.0..125.0]   max-of-runs 57750 ns, >100us per run [0, 0, 0, 0, 0]
+  boost::unordered_flat_map, no reserve      p50      41.0 [41.0..41.0]   p99     125.0 [125.0..125.0]   max-of-runs 13691625 ns, >100us per run [8, 8, 8, 8, 8]
+  boost::unordered_flat_map, reserve(N)      p50      41.0 [41.0..41.0]   p99      84.0 [84.0..84.0]   max-of-runs 26583 ns, >100us per run [0, 0, 0, 0, 0]
+=== bench_scatter: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+
+  sorted arrival, std::allocator             p50       6.6 [6.4..6.6]   p99       8.2 [7.9..9.1]
+  random arrival, std::allocator             p50      81.4 [78.1..82.2]   p99     101.2 [88.6..107.0]
+  sorted arrival, pmr arena                  p50       6.4 [6.2..6.5]   p99       8.0 [7.8..8.1]
+  random arrival, pmr arena                  p50      81.5 [80.7..83.5]   p99     105.2 [90.6..109.1]
+=== bench_ordered: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+
+  insert, ascending keys                     p50     208.0 [208.0..209.0]   p99     292.0 [292.0..333.0]   max-of-runs 168750 ns, >100us per run [0, 0, 1, 0, 0]
+  insert, pseudo-random keys                 p50     459.0 [459.0..500.0]   p99    1250.0 [1208.0..1375.0]   max-of-runs 508375 ns, >100us per run [0, 0, 0, 0, 1]
+  erase, pseudo-random keys                  p50     459.0 [417.0..500.0]   p99    1083.0 [1042.0..1166.0]   max-of-runs 831208 ns, >100us per run [0, 0, 0, 1, 0]
+=== capstone: 5 runs; per-metric median [min..max] of p50 / p99 (ns)
+MIStore<std::allocator>, modify()  (live=100048, ops=1000000
+  add                                        p50     250.0 [250.0..292.0]   p99     583.0 [542.0..917.0]
+  cancel                                     p50     167.0 [167.0..291.0]   p99    2625.0 [750.0..2667.0]
+  modify_price                               p50   10875.0 [9667.0..17292.0]   p99   48917.0 [44584.0..82500.0]
+  best_5                                     p50     167.0 [167.0..167.0]   p99     333.0 [333.0..500.0]
+  client_qty                                 p50   24167.0 [20500.0..45500.0]   p99   72584.0 [59917.0..125417.0]
+MIStore<std::allocator>, replace()  (live=100048, ops=100000
+  add                                        p50     250.0 [250.0..250.0]   p99     417.0 [416.0..458.0]
+  cancel                                     p50     167.0 [166.0..167.0]   p99     417.0 [375.0..583.0]
+  modify_price                               p50     375.0 [375.0..416.0]   p99     750.0 [708.0..792.0]
+  best_5                                     p50     166.0 [166.0..166.0]   p99     250.0 [250.0..291.0]
+  client_qty                                 p50   27250.0 [23541.0..29542.0]   p99   65792.0 [57708.0..70458.0]
+MIStore<pmr::polymorphic_allocator>, replace(), monotonic ar
+  add                                        p50     208.0 [208.0..208.0]   p99     458.0 [417.0..458.0]
+  cancel                                     p50     167.0 [167.0..167.0]   p99     459.0 [458.0..500.0]
+  modify_price                               p50     417.0 [417.0..417.0]   p99     834.0 [792.0..875.0]
+  best_5                                     p50     166.0 [166.0..166.0]   p99     291.0 [250.0..292.0]
+  client_qty                                 p50   37833.0 [33125.0..38542.0]   p99   76708.0 [71917.0..86208.0]
+FastStore (pool + intrusive + ladder + flat_map)  (live=1000
+  add                                        p50      41.0 [41.0..41.0]   p99      84.0 [84.0..84.0]
+  cancel                                     p50      42.0 [42.0..42.0]   p99     167.0 [125.0..209.0]
+  modify_price                               p50      42.0 [42.0..83.0]   p99     167.0 [166.0..250.0]
+  best_5                                     p50      41.0 [41.0..41.0]   p99      84.0 [84.0..84.0]
+  client_qty                                 p50   18125.0 [14833.0..22333.0]   p99   56041.0 [32750.0..86750.0]
+=== bench_rehash detail: median [min..max] over runs of mean, p99.9, max (ns)
+  MI hashed_unique, no reserve               mean 52 [51..54]  p99.9 1292 [1250..1333]  max 8357750 [8231125..8671333]
+  MI hashed_unique, reserve(N)               mean 37 [36..38]  p99.9 875 [792..2084]  max 35792 [35458..42167]
+  MI hashed_unique, reserve + pmr arena      mean 28 [27..31]  p99.9 125 [125..1208]  max 10250 [5125..29750]
+  std::unordered_map, no reserve             mean 50 [48..52]  p99.9 1375 [1333..1417]  max 6460750 [5688792..10256375]
+  std::unordered_map, reserve(N)             mean 39 [38..41]  p99.9 1334 [1209..1417]  max 50500 [44250..57750]
+  boost::unordered_flat_map, no reserve      mean 53 [52..56]  p99.9 1250 [1208..1541]  max 13358416 [13160334..13691625]
+  boost::unordered_flat_map, reserve(N)      mean 28 [28..29]  p99.9 167 [167..167]  max 14500 [6125..26583]
+=== bench_ordered detail: median [min..max] over runs of mean, p99.9, max (ns)
+  insert, ascending keys                     mean 211 [204..223]  p99.9 500 [417..500]  max 41375 [30125..168750]
+  insert, pseudo-random keys                 mean 518 [497..524]  p99.9 3709 [1500..4666]  max 53459 [36500..508375]
+  erase, pseudo-random keys                  mean 495 [471..507]  p99.9 2709 [1292..4291]  max 40667 [34833..831208]

@@ -1,0 +1,1 @@
+void prepare(Store& s, std::size_t n) { s.reserve(n); }

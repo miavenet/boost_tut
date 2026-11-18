@@ -1,0 +1,10 @@
+# clang++ -std=c++23 -O2 -I/opt/homebrew/include labs/l2_boost_pmr.cpp -o $TMP/x   (NO -lboost_container) — 2026-11-14 10:09:13
+Undefined symbols for architecture arm64:
+  "boost::container::pmr::monotonic_buffer_resource::monotonic_buffer_resource(boost::container::pmr::memory_resource*)", referenced from:
+      _main in l2_boost_pmr-d07dad.o
+  "boost::container::pmr::monotonic_buffer_resource::~monotonic_buffer_resource()", referenced from:
+      _main in l2_boost_pmr-d07dad.o
+      _main in l2_boost_pmr-d07dad.o
+ld: symbol(s) not found for architecture arm64
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+exit=1 (clang++ link failure, as printed above)

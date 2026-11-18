@@ -1,0 +1,3 @@
+using Instruments = multi_index_container<Instrument, indexed_by<
+    hashed_unique<key<&Instrument::symbol>>,
+    hashed_unique<key<&Instrument::exchange, &Instrument::local_id>>>>;

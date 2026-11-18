@@ -1,0 +1,96 @@
+answer	Pass the sequence as the 4th template argument: `flat_map<K, T, std::less<K>, small_vector<std::pair<K,T>, N>>` (or static_vector<…, N>). small_vector: past N it allocates on the heap and keeps working. static_vector: never allocates; past N it throws boost::container::bad_alloc (default throw_on_overflow<true>; UB if overflow checking is turned off).
+confidence	unsure
+grade	h
+continue	
+answer	directly; rehash (growth); cannot; reserve(expected max) before the hot path.
+confidence	unsure
+grade	h
+continue	
+answer	2k; 2k+1; `2*k + (b[k] < x)`.
+confidence	unsure
+grade	h
+continue	
+answer	Direct-indexed array: keys are dense small integers. Linear scan over a tiny array: very small N (here only 32-byte keys, N ≤ 16). boost::unordered_flat_map: point lookups only, no order needed (fastest at every N measured; reserve to avoid rehash spikes); unordered_node_map if references must survive rehashing. Eytzinger (or B-tree) layout: large, mostly static sorted sets (≈5× faster than binary
+confidence	unsure
+grade	h
+continue	
+answer	Write-heavy hot path, especially with random-position inserts and erases (O(N) shifts). Large N combined with frequent writes. Stable references, pointers or iterators are needed across mutations. Only point lookups are needed, with no order or ranges (a hash table or direct index is faster).
+confidence	unsure
+grade	h
+continue	
+answer	const Config* find_cfg(const std::vector<Config>& t, uint32_t id) { return id < t.size() ? &t[id] : nullptr; }
+confidence	unsure
+continue	
+answer	h.reserve(1000000);
+confidence	unsure
+continue	
+answer	A static Eytzinger (or B-tree) layout, or a hash set: built once per day off the hot path. Eytzinger turns ~24 dependent probes (most of them cache misses at this size) into prefetchable, branch-free probes (≈5× faster than binary search at 16M here). A hash set would avoid the log N probes entirely if no order is needed. Cost: rebuild on every update (the layout is static), plus extra code to mai
+confidence	unsure
+grade	h
+continue	
+answer	160000
+confidence	sure
+continue	
+answer	use-after-free (dangling into a freed block); different element; reallocation (first case).
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<const int&, double&>; std::move(s).extract().
+confidence	unsure
+grade	h
+continue	
+answer	std::pair<Key,T> with a non-const key; move-assign; movable (preferably nothrow-movable).
+confidence	unsure
+grade	h
+continue	
+answer	Insert/emplace (shift, and reallocation when full), erase (shift of elements at/after the erased key), and reserve/growth (reallocation). std::map allocates each element as its own node and never moves it, so references stay valid until that element is erased.
+confidence	unsure
+grade	h
+continue	
+answer	The array is no longer sorted, so binary search returns wrong results, even for keys that were not changed. std::map has node handles (extract(key)/insert(node)) and stable references. A flat_map has neither (and needs movable element types).
+confidence	unsure
+grade	h
+continue	
+answer	Boost owns one sequence of pair<K,T>; std adapts two containers (keys, values). Consequence: std's search reads only the keys array, which should mean fewer cache lines per probe. In the bench std::flat_map was ~20–25% faster at 1M with 8-byte keys, but larger values slowed it about as much as Boost (+18% vs +22%), and with 32-byte keys at 1M it was slower, so measure. Boost value_type/reference i
+confidence	unsure
+grade	h
+continue	
+answer	long limit_after_listing(RiskTable& t) { add_listings(t); return t.find(200)->second.max_qty; }
+confidence	unsure
+continue	
+answer	auto c = std::move(s).extract();\nfor (auto& v : c.values) v = 0.0;\ns.replace(std::move(c.keys), std::move(c.values));
+confidence	unsure
+continue	
+answer	Any insert/erase in the flat_map moves Orders, so the queue's pointers dangle (realloc) or silently point at other orders (shift). Fixes: store keys (OrderId) in the queue and re-find; or keep Orders in stable storage (node container / pool / std::deque with no middle erase) and index them; or use a node-based map when pointer stability is required.
+confidence	unsure
+grade	h
+continue	
+answer	std::flat_map (separate keys array): contains() reads only the 16-byte keys, so the search touches fewer cache lines than striding over 272-byte pairs. Before committing, measure your actual shapes (the bench showed std::flat_map ~24% ahead at 8B keys / 64B values at 1M, but also ~21% ahead at 8B values, so the bigger value added no extra gain, and a loss at 32B keys / 1M: 464.8 vs 334.0 ns). You 
+confidence	unsure
+grade	h
+continue	
+answer	Same decision: elements live by value in one array that the container shifts with move-assignment. That move-assignment needs a non-const key, and it moves elements under your references. std::flat_map also shifts elements (so references and iterators still dangle), but its proxy reference exposes the key as const, so you cannot break the ordering through an iterator.
+confidence	unsure
+grade	h
+continue	
+continue	
+elaborate	my own explanation, written before opening the key
+continue	
+hands_on	my own explanation, written before opening the key
+continue	
+answer	reallocation spike; O(N) shift of the middle insert; small side (static_vector-backed) table.
+confidence	unsure
+grade	h
+continue	
+answer	risk.reserve(risk.size() + kMaxNewListings);
+confidence	unsure
+continue	
+answer	The remaining spike is the O(N) shift of a middle insert (~1.2 MB moved), not allocation. More capacity does not change how many elements move. Fixes: stage new listings in a small side table and merge off the hot path (measured max ~9.5 µs, 5–13 over 5 runs; mean +~24 ns), or rebuild the table off-thread and swap a pointer. Or choose a structure with O(1)/O(log N) insert for this table (hash map,
+confidence	unsure
+grade	h
+continue	
+continue	
+answer	Are keys dense ints I control (or can I remap them once)? → direct array. Do I only need point lookups? → boost::unordered_flat_map, reserved (unordered_node_map if references must be stable). Do I need order or ranges, with read-mostly use and small/medium N? → flat_map (bulk-built, reserved, -DNDEBUG; small_vector/static_vector if tiny and bounded). Is the set huge and static? → Eytzinger/B-tree
+confidence	unsure
+grade	h
+continue	

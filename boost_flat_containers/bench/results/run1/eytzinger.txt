@@ -1,0 +1,18 @@
+[built NDEBUG not defined: assert()/BOOST_ASSERT checks ON]
+Apple M1 Max, Apple clang 21, -O2. uint64 keys, successful lookups.
+N = 4096 (32 KiB of keys)  ns/lookup p50 | p99
+  std::lower_bound (sorted)       16.9 |    17.6
+  boost::flat_set::find           22.1 |    23.4
+  Eytzinger + prefetch            11.7 |    13.7
+N = 65536 (512 KiB of keys)  ns/lookup p50 | p99
+  std::lower_bound (sorted)       44.9 |    46.9
+  boost::flat_set::find           53.4 |    55.3
+  Eytzinger + prefetch            19.5 |    20.8
+N = 1048576 (8192 KiB of keys)  ns/lookup p50 | p99
+  std::lower_bound (sorted)       95.0 |   121.1
+  boost::flat_set::find          110.0 |   140.6
+  Eytzinger + prefetch            38.4 |    54.0
+N = 16777216 (131072 KiB of keys)  ns/lookup p50 | p99
+  std::lower_bound (sorted)      508.5 |   545.6
+  boost::flat_set::find          594.4 |   716.8
+  Eytzinger + prefetch            91.1 |   109.4

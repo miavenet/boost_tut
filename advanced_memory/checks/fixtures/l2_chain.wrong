@@ -1,0 +1,1 @@
+std::pmr::monotonic_buffer_resource mono(buf, sizeof buf); std::pmr::unsynchronized_pool_resource pool(&mono);

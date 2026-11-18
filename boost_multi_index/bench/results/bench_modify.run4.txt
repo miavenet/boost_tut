@@ -1,0 +1,21 @@
+-- N=100000 live orders, 3 indices, 100000 clients (1 orders per client); ns per op incl. find(id)
+find only (baseline)                     n=20000    mean=     9.8  p50=     7.8  p99=    20.8  p99.9=    169.3  max=    2184.9 ns  >100us:0
+modify qty (non-key)                     n=20000    mean=    97.1  p50=    93.8  p99=   166.7  p99.9=    356.8  max=    1838.5 ns  >100us:0
+replace qty (non-key)                    n=20000    mean=    86.6  p50=    83.4  p99=   140.6  p99.9=    328.1  max=    1914.1 ns  >100us:0
+modify price (key)                       n=20000    mean=   428.7  p50=   427.1  p99=   507.8  p99.9=    578.1  max=     901.1 ns  >100us:0
+replace price (key)                      n=20000    mean=   426.7  p50=   424.5  p99=   507.8  p99.9=    583.3  max=    3307.3 ns  >100us:0
+size after all ops = 100000 (non-unique indices: nothing can collide)
+-- N=100000 live orders, 3 indices, 1000 clients (100 orders per client); ns per op incl. find(id)
+find only (baseline)                     n=20000    mean=     8.9  p50=     7.8  p99=    18.2  p99.9=     23.4  max=    1039.1 ns  >100us:0
+modify qty (non-key)                     n=20000    mean=  1274.9  p50=  1260.4  p99=  2161.4  p99.9=   3028.7  max=    5041.7 ns  >100us:0
+replace qty (non-key)                    n=20000    mean=    84.5  p50=    83.3  p99=   122.4  p99.9=    145.8  max=     403.6 ns  >100us:0
+modify price (key)                       n=20000    mean=  1831.6  p50=  1820.3  p99=  2908.8  p99.9=   4156.2  max=   22291.6 ns  >100us:0
+replace price (key)                      n=20000    mean=   430.1  p50=   429.7  p99=   622.4  p99.9=    981.8  max=    2572.9 ns  >100us:0
+size after all ops = 100000 (non-unique indices: nothing can collide)
+-- N=100000 live orders, 3 indices, 64 clients (1562 orders per client); ns per op incl. find(id)
+find only (baseline)                     n=20000    mean=     8.6  p50=     7.8  p99=    15.6  p99.9=     20.8  max=     226.6 ns  >100us:0
+modify qty (non-key)                     n=20000    mean= 19742.7  p50= 18619.8  p99= 48744.8  p99.9=  69906.2  max=  131789.1 ns  >100us:1
+replace qty (non-key)                    n=20000    mean=    86.6  p50=    85.9  p99=   130.2  p99.9=    166.6  max=     432.3 ns  >100us:0
+modify price (key)                       n=20000    mean= 25003.7  p50= 24388.0  p99= 62205.7  p99.9=  87278.6  max=  136020.8 ns  >100us:2
+replace price (key)                      n=20000    mean=   257.6  p50=   257.8  p99=   294.2  p99.9=    320.3  max=     476.6 ns  >100us:0
+size after all ops = 100000 (non-unique indices: nothing can collide)

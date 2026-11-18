@@ -1,0 +1,4 @@
+machine: Darwin arm64 (Apple M1 Max), Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2, shared machine (not an isolated core)
+run 4: labs/build/l4_hot_cold
+fat struct (hot+cold)        128 B/order  p50=4.05  p99=4.20  max=4.20 ns/order  (sink 3)
+hot fields split out          24 B/order  p50=0.40  p99=0.49  max=0.49 ns/order  (sink 3)

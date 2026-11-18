@@ -1,0 +1,4 @@
+# 2026-11-14: o.send_hook.unlink() on a default (safe_link) list_member_hook, via checks/l7_transition_fill.sh
+check rc=1
+/opt/homebrew/include/boost/intrusive/detail/generic_hook.hpp:210:39: error: static assertion failed due to requirement '(int)hooktags_impl<boost::intrusive::list_node_traits<void *>, boost::intrusive::member_tag, boost::intrusive::safe_link, boost::intrusive::NoBaseHookId>::link_mode == (int)auto_unlink': ( (int)hooktags::link_mode == (int)auto_unlink )
+1 error generated.

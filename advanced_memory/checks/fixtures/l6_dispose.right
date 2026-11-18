@@ -1,0 +1,1 @@
+lvl.clear_and_dispose([&](Order* o) { pool.destroy(o); });

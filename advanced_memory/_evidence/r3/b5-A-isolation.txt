@@ -1,0 +1,33 @@
+# b5_book A, 5 runs interleaved, each its own process: 'fixed' = bench/build/b5_book (reserve 2x capacity = 400,000);
+# 'reserve1x' = same fixed headers but reserve(capacity) (_evidence/r3/variants/book_reserve_1x). 50,000 live of 200,000 capacity. 2026-11-14 10:58:24
+# machine: Darwin arm64 Apple M1 Max, Apple clang version 21.0.0 (clang-2100.4.1.1), -std=c++23 -O2 -DNDEBUG; load: 4.37 3.93 3.59; tm: BackupNotRunning
+fixed     A  intrusive+slab+flat_map add               n=139998  mean=    32 p50=   41 p99=   84 p99.9=   125 max=    4958 ns  faults=0
+fixed     A  intrusive+slab+flat_map cancel            n=139773  mean=    60 p50=   42 p99=  167 p99.9=   208 max=    5583 ns  faults=0
+fixed     A  intrusive+slab+flat_map modify            n=79935   mean=    49 p50=   42 p99=  125 p99.9=   167 max=    6625 ns  faults=0
+reserve1x A  intrusive+slab+flat_map add               n=139998  mean=    28 p50=   41 p99=   84 p99.9=   125 max=     292 ns  faults=0
+reserve1x A  intrusive+slab+flat_map cancel            n=139773  mean=    53 p50=   42 p99=  167 p99.9=   208 max=   21000 ns  faults=0
+reserve1x A  intrusive+slab+flat_map modify            n=79935   mean=    43 p50=   42 p99=  125 p99.9=   167 max=     291 ns  faults=0
+fixed     A  intrusive+slab+flat_map add               n=139998  mean=    32 p50=   41 p99=   84 p99.9=   125 max=    3958 ns  faults=0
+fixed     A  intrusive+slab+flat_map cancel            n=139773  mean=    63 p50=   42 p99=  167 p99.9=   292 max=    7834 ns  faults=0
+fixed     A  intrusive+slab+flat_map modify            n=79935   mean=    51 p50=   42 p99=  167 p99.9=   250 max=    9291 ns  faults=0
+reserve1x A  intrusive+slab+flat_map add               n=139998  mean=    28 p50=   41 p99=   84 p99.9=   125 max=     250 ns  faults=0
+reserve1x A  intrusive+slab+flat_map cancel            n=139773  mean=    56 p50=   42 p99=  167 p99.9=   208 max=   12416 ns  faults=0
+reserve1x A  intrusive+slab+flat_map modify            n=79935   mean=    44 p50=   42 p99=  125 p99.9=   167 max=    2459 ns  faults=0
+fixed     A  intrusive+slab+flat_map add               n=139998  mean=    31 p50=   41 p99=   84 p99.9=   125 max=     209 ns  faults=0
+fixed     A  intrusive+slab+flat_map cancel            n=139773  mean=    60 p50=   42 p99=  167 p99.9=   208 max=    1625 ns  faults=0
+fixed     A  intrusive+slab+flat_map modify            n=79935   mean=    48 p50=   42 p99=  125 p99.9=   167 max=     250 ns  faults=0
+reserve1x A  intrusive+slab+flat_map add               n=139998  mean=    27 p50=   41 p99=   84 p99.9=   125 max=    8042 ns  faults=0
+reserve1x A  intrusive+slab+flat_map cancel            n=139773  mean=    46 p50=   42 p99=  125 p99.9=   167 max=    8416 ns  faults=0
+reserve1x A  intrusive+slab+flat_map modify            n=79935   mean=    37 p50=   42 p99=  125 p99.9=   167 max=     375 ns  faults=0
+fixed     A  intrusive+slab+flat_map add               n=139998  mean=    27 p50=   41 p99=   84 p99.9=    84 max=   10875 ns  faults=0
+fixed     A  intrusive+slab+flat_map cancel            n=139773  mean=    44 p50=   42 p99=  125 p99.9=   167 max=    5584 ns  faults=0
+fixed     A  intrusive+slab+flat_map modify            n=79935   mean=    37 p50=   42 p99=  125 p99.9=   166 max=    2292 ns  faults=0
+reserve1x A  intrusive+slab+flat_map add               n=139998  mean=    25 p50=   41 p99=   42 p99.9=    84 max=    4250 ns  faults=0
+reserve1x A  intrusive+slab+flat_map cancel            n=139773  mean=    33 p50=   42 p99=   84 p99.9=   125 max=   13375 ns  faults=0
+reserve1x A  intrusive+slab+flat_map modify            n=79935   mean=    27 p50=   41 p99=   84 p99.9=   125 max=     167 ns  faults=0
+fixed     A  intrusive+slab+flat_map add               n=139998  mean=    29 p50=   41 p99=   84 p99.9=   125 max=   11083 ns  faults=0
+fixed     A  intrusive+slab+flat_map cancel            n=139773  mean=    48 p50=   42 p99=  167 p99.9=   208 max=     334 ns  faults=0
+fixed     A  intrusive+slab+flat_map modify            n=79935   mean=    39 p50=   42 p99=  125 p99.9=   208 max=    2416 ns  faults=0
+reserve1x A  intrusive+slab+flat_map add               n=139998  mean=    29 p50=   41 p99=   84 p99.9=   125 max=    4292 ns  faults=0
+reserve1x A  intrusive+slab+flat_map cancel            n=139773  mean=    47 p50=   42 p99=  167 p99.9=   292 max=   15583 ns  faults=0
+reserve1x A  intrusive+slab+flat_map modify            n=79935   mean=    38 p50=   42 p99=  125 p99.9=   250 max=    4459 ns  faults=0

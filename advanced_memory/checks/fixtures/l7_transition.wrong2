@@ -1,0 +1,2 @@
+o.send_hook.unlink();
+ack.push_back(o);

@@ -1,0 +1,2 @@
+send.remove_if([&](const Order& x) { return &x == &o; });
+ack.push_back(o);

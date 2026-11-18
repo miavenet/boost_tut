@@ -1,0 +1,1 @@
+ack.erase(AckQueue::s_iterator_to(o));

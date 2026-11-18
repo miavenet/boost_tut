@@ -1,0 +1,233 @@
+answer	unlinked
+confidence	0.8
+continue	
+answer	if (l.next != nil) (base_[l.next].*M).prev = l.prev; else tail_ = l.prev;
+confidence	0.8
+continue	
+answer	if (Order* o = pool.get(h)) pool.destroy(o);
+confidence	0.8
+continue	
+answer	ilink& l = base_[i].*M;\nif (l.prev != nil) (base_[l.prev].*M).next = l.next; else head_ = l.next;\nif (l.next != nil) (base_[l.next].*M).prev = l.prev; else tail_ = l.prev;\nl.prev = l.next = nil;
+confidence	0.8
+continue	
+answer	lvl.clear_and_dispose([&](Order* o) { pool.destroy(o); });
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	ordered
+confidence	0.8
+continue	
+answer	send.erase(SendQueue::s_iterator_to(o));
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	send.erase(SendQueue::s_iterator_to(o));\nack.push_back(o);
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	arena.seal();
+confidence	0.8
+continue	
+answer	reserve
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	hft::map<long, Order>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+stretch	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	no-op ; release
+confidence	0.8
+continue	
+answer	std::pmr::null_memory_resource()
+confidence	0.8
+continue	
+answer	do_is_equal
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::monotonic_buffer_resource mono(buf, sizeof buf, std::pmr::null_memory_resource()); std::pmr::unsynchronized_pool_resource pool(&mono);
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	return this == &other;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::size_t s = (off_ + align - 1) & ~(align - 1); if (s + bytes > cap_) throw std::bad_alloc(); off_ = s + bytes; return base_ + s;
+confidence	0.8
+continue	
+answer	P M B T H
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	before
+confidence	0.8
+continue	
+answer	hft::multi_index<Order, Indices>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::string
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	struct Counters { alignas(128) std::atomic<long> a; alignas(128) std::atomic<long> b; };
+confidence	0.8
+continue	
+answer	auto* n = static_cast<node*>(p); n->next = head_; head_ = n;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	safe_link
+confidence	0.8
+continue	
+answer	b.clients[o->client].erase(Client::s_iterator_to(*o));
+confidence	0.8
+continue	
+answer	return o.send_hook.is_linked();
+confidence	0.8
+continue	
+answer	Order* o = b.ids.find(id)->second;\nb.levels[o->px].erase(Level::s_iterator_to(*o));\nb.clients[o->client].erase(Client::s_iterator_to(*o));\nb.ids.erase(id);\nb.orders.destroy(o);
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	return o.send_hook.is_linked() && o.venue == v;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	

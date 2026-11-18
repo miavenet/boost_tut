@@ -1,0 +1,27 @@
+machine: Darwin arm64 (Apple M1 Max), Apple clang version 21.0.0 (clang-2100.4.1.1), flags: -std=c++23 -O2, shared machine (not an isolated core)
+run 1: labs/build/l1_tail_histogram nowarm nocap
+Allocating 200000 objects of 256 B, each written once (the 'message handler').
+
+MALLOC (new in the hot path)   page faults in loop: 3138
+  mean=46 ns  p50=41  p99=1041  p99.9=1500  max=29375 ns
+     <50ns  196778 |########################################
+    <100ns      55 |#
+    <250ns      40 |#
+    <500ns       1 |#
+     <1us      821 |#
+     <5us     2290 |#
+    <20us       13 |#
+   >=20us        2 |#
+
+arena: warm()=no, max_blocks_per_chunk=0 (library default)
+
+ARENA  (hft::thread_arena, pre-faulted)   page faults in loop: 0
+  mean=30 ns  p50=41  p99=42  p99.9=42  max=272708 ns
+     <50ns  199865 |########################################
+    <100ns      74 |#
+    <250ns      25 |#
+    <500ns       0 |
+     <1us        3 |#
+     <5us       13 |#
+    <20us        8 |#
+   >=20us       12 |#

@@ -1,0 +1,1 @@
+b.clients[o->client].erase(b.clients[o->client].iterator_to(*o));

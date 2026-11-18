@@ -1,0 +1,42 @@
+assessment_answer	Fastest to slowest: boost::unordered_flat_map (~12 ns), std::unordered_map (~25), flat_map (~163), std::map (~424) in the lesson-1 table; the order matters, not the digits. Hash tables compute one bucket (O(1) expected probes); flat_map and std::map both do ~log2 N dependent probes. flat_map beats s
+confidence	unsure
+assessment_answer	The build has no -DNDEBUG (or -DBOOST_DISABLE_ASSERTS), so BOOST_ASSERT = assert() runs inside Boost's vector iterator (operator*, ++, +=) in the binary-search loop; they timed the checks, not only the layout. Rebuild with -DNDEBUG or -DBOOST_DISABLE_ASSERTS; in the lessons' bench this flipped flat_
+confidence	unsure
+assessment_answer	Bytes moved = (number of elements after the erased slot) x sizeof(value_type); they shift one slot left (insert shifts them right). Each random insert moves about N/2 elements on average, so N inserts cost about N^2/4 element moves. Remedy: sort, then construct with ordered_unique_range (linear), or
+confidence	unsure
+assessment_answer	One random insert moves about N/2 = 100,000 elements x 8 bytes = ~800,000 bytes; 1,000 of them move ~800 MB per batch (order of magnitude is what counts). Sort the batch and merge it once with insert(ordered_unique_range, first, last), which is linear: each existing element moves about once, plus k 
+confidence	unsure
+assessment_answer	Reallocation: the old block is freed, so the reference is a heap-use-after-free; ASan reports it. reserve() prevents this one. Shift without reallocation: the reference still points at the same slot, which now holds a different element; silent wrong data, ASan does not report it, and reserve() does 
+confidence	unsure
+assessment_answer	If a spawn reallocates: t dangles into freed memory, a heap-use-after-free that ASan reports (or a crash). If capacity was enough: no ASan error, but t now points at a different entity's Transform because the elements shifted, so physics silently moves the wrong entity. Fix: keep the EntityId and re
+confidence	unsure
+assessment_answer	(a) Boost: one sequence of std::pair<K,T>; std: an adaptor over two containers (keys, mapped values) aligned by index. (b) Boost: a real std::pair<K,T>& (key writable); std: a proxy std::pair<const K&, T&> returned by value. (c) boost::container::ordered_unique_range vs std::sorted_unique. (d) Boost
+confidence	unsure
+assessment_answer	(1) Does not compile: std::flat_map has no member reserve. Reserve the keys and values vectors before handing them in. (2) No adopt_sequence: fill a keys vector and a values vector, then construct with std::sorted_unique or call replace(std::move(keys), std::move(values)). (3) auto& does not compile
+confidence	unsure
+assessment_answer	It throws boost::container::bad_alloc (default throw_on_overflow<true>); it never allocates and the size stays N. catch boost::container::bad_alloc, boost::container::exception or std::exception catches it; catch (const std::bad_alloc&) does NOT. BOOST_CONTAINER_USE_STD_EXCEPTIONS makes Boost.Contai
+confidence	unsure
+assessment_answer	Hard cap of 8: static_vector<pair<...>, 8> as the 4th template argument, so the table never touches the heap and overflow is a loud error. The catch is wrong with default settings: the overflow throws boost::container::bad_alloc, which std::bad_alloc does not catch; catch boost::container::bad_alloc
+confidence	unsure
+assessment_answer	flat_map: O(N) moves per insert/erase, references not stable. std::map: O(log N) + one allocation, stable. unordered_flat_map: O(1) average with rehash spikes, not stable (unordered_node_map is). Direct array: O(1), stable at fixed size. flat_map fits a read-mostly, small-to-medium table that needs 
+confidence	unsure
+assessment_answer	Not flat_map: random inserts/erases shift about N/2 elements each, and cost grows linearly with N (already ~2.6 us for a random insert at 10,000 entries vs ~208 ns for std::map insert+erase). Held pointers dangle on every insert/erase, so pointer stability rules it out on its own. Id-only lookups ne
+confidence	unsure
+assessment_answer	Reallocation: flat_map (vector) growth when size() == capacity() moves the whole array; fix: reserve the session maximum at startup / build at final size. Shift: a front/middle insert moves every later element (O(N)), and reserve cannot help; fix: stage new keys in a small side table and merge off t
+confidence	unsure
+assessment_answer	First spike: reallocation, because shrink_to_fit left capacity == size, so the first insert reallocates and copies the whole array (the one heap allocation). Fix: reserve(size + expected new campaigns) at startup. Later spikes: the O(N) shift of a middle insert into the 500k array, which reserve can
+confidence	unsure
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	p
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h

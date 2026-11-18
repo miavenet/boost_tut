@@ -1,0 +1,5 @@
+using Instruments = multi_index_container<Instrument, indexed_by<
+    hashed_unique<member<Instrument, std::string, &Instrument::symbol>>,
+    ordered_unique<composite_key<Instrument,
+        member<Instrument, int, &Instrument::exchange>,
+        member<Instrument, std::uint32_t, &Instrument::local_id>>>>>;

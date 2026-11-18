@@ -1,0 +1,1 @@
+if (Order* o = pool.get(h)) pool.destroy(o);

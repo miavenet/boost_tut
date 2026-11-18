@@ -1,0 +1,1 @@
+for (auto it = send.begin(); it != send.end(); ++it) if (&*it == &o) { send.erase(it); break; }

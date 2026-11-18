@@ -1,0 +1,123 @@
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::null_memory_resource()
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::monotonic_buffer_resource mono(buf, sizeof buf, std::pmr::null_memory_resource()); std::pmr::unsynchronized_pool_resource pool(&mono);
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	return this == &other;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::size_t s = (off_ + align - 1) & ~(align - 1); if (s + bytes > cap_) throw std::bad_alloc(); off_ = s + bytes; return base_ + s;
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+answer	P M B T H
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+continue	
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+hands_on	my own words
+continue	
+continue	
+elaborate	my own words
+continue	
+continue	
+answer	before
+confidence	0.8
+continue	
+continue	
+answer	hft::multi_index<Order, Indices>
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	
+answer	std::pmr::string
+confidence	0.8
+continue	
+answer	answer written from memory against the key
+confidence	0.8
+grade	h
+continue	

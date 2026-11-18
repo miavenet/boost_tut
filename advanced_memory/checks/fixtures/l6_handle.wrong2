@@ -1,0 +1,1 @@
+Order* o = pool.at(h.index); if (o) pool.destroy(o);

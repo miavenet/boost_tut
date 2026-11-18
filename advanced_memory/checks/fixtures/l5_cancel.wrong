@@ -1,0 +1,4 @@
+Order* o = b.ids.find(id)->second;
+b.levels[o->px].erase(Level::s_iterator_to(*o));
+b.ids.erase(id);
+b.orders.destroy(o);

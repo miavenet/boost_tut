@@ -1,0 +1,71 @@
+# lab repeats for lessons 05-07 numbers (round 3, fixed headers unless named) — 2026-11-14 10:54:58
+# machine: Darwin arm64 Apple M1 Max, Apple clang version 21.0.0 (clang-2100.4.1.1), labs -std=c++23 -O2 (labs/build.sh)
+# load: 2.81 3.06 3.26   time machine: BackupNotRunning   (shared Mac)
+## l7_ordered_free x10
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1470.3 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1435.3 ns
+live objects ABOVE the lowest free block:   0.0%   mean ordered_free + malloc:     4.0 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1441.4 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1433.1 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1429.3 ns
+live objects ABOVE the lowest free block:   0.0%   mean ordered_free + malloc:     4.0 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1432.7 ns
+live objects ABOVE the lowest free block:  65.3%   mean ordered_free + malloc:  1465.3 ns
+live objects ABOVE the lowest free block:   0.0%   mean ordered_free + malloc:     4.0 ns
+## l6_slab x6, interleaved, same source labs/l6_slab.cpp (-O2): 'fixed' = the lab binary (fixed header, HFT_MEM_CHECKED=1, the default);
+## the other three HFT_MEM_CHECKED=0: fixed0 = fixed header; prefix0 = pre-fix header (_evidence/r3/old_headers);
+## nogen0 = fixed header minus create()'s generation bump (_evidence/r3/variants/slab_no_create_gen) — 10:55:44
+fixed   LIFO 12.7 ns, FIFO 12.2 ns
+fixed0  LIFO 12.3 ns, FIFO 12.2 ns
+prefix0 LIFO 10.5 ns, FIFO 12.0 ns
+nogen0  LIFO 10.4 ns, FIFO 11.8 ns
+fixed   LIFO 12.8 ns, FIFO 12.2 ns
+fixed0  LIFO 11.9 ns, FIFO 11.8 ns
+prefix0 LIFO 10.4 ns, FIFO 11.9 ns
+nogen0  LIFO 10.4 ns, FIFO 11.5 ns
+fixed   LIFO 12.2 ns, FIFO 11.7 ns
+fixed0  LIFO 12.1 ns, FIFO 11.8 ns
+prefix0 LIFO 10.4 ns, FIFO 11.9 ns
+nogen0  LIFO 10.6 ns, FIFO 11.7 ns
+fixed   LIFO 12.3 ns, FIFO 11.7 ns
+fixed0  LIFO 12.0 ns, FIFO 11.6 ns
+prefix0 LIFO 10.5 ns, FIFO 11.7 ns
+nogen0  LIFO 10.4 ns, FIFO 11.8 ns
+fixed   LIFO 12.4 ns, FIFO 12.2 ns
+fixed0  LIFO 12.1 ns, FIFO 11.7 ns
+prefix0 LIFO 10.3 ns, FIFO 11.7 ns
+nogen0  LIFO 10.4 ns, FIFO 11.8 ns
+fixed   LIFO 12.3 ns, FIFO 11.8 ns
+fixed0  LIFO 11.9 ns, FIFO 11.8 ns
+prefix0 LIFO 10.3 ns, FIFO 11.8 ns
+nogen0  LIFO 10.6 ns, FIFO 11.7 ns
+## l5_membership x5 (fix c walk)
+  fix c for the first of 100,001 orders in one list: 100001 steps, 209 us
+  fix c for the first of 100,001 orders in one list: 100001 steps, 205 us
+  fix c for the first of 100,001 orders in one list: 100001 steps, 280 us
+  fix c for the first of 100,001 orders in one list: 100001 steps, 220 us
+  fix c for the first of 100,001 orders in one list: 100001 steps, 212 us
+## l6_traps container-dies x5, both builds
+~list with 1,000,000 orders: safe_link 1438 us, normal_link 0.0 us
+ndebug: ~list with 1,000,000 orders: safe_link 1442 us, normal_link 0.2 us
+~list with 1,000,000 orders: safe_link 1440 us, normal_link 0.0 us
+ndebug: ~list with 1,000,000 orders: safe_link 1448 us, normal_link 0.2 us
+~list with 1,000,000 orders: safe_link 1437 us, normal_link 0.1 us
+ndebug: ~list with 1,000,000 orders: safe_link 1458 us, normal_link 0.0 us
+~list with 1,000,000 orders: safe_link 1444 us, normal_link 1.7 us
+ndebug: ~list with 1,000,000 orders: safe_link 1445 us, normal_link 0.0 us
+~list with 1,000,000 orders: safe_link 1441 us, normal_link 0.0 us
+ndebug: ~list with 1,000,000 orders: safe_link 1426 us, normal_link 0.4 us
+## l6_buckets x5
+size=50000  bucket_count=64  (load factor 781: nothing grew)|mean find(id), 64 buckets:     2695.8 ns|after rehash to 65536 buckets:    1.6 ns   (bucket_count=65536)|mean find(id), tree of 50000:       56.8 ns|
+size=50000  bucket_count=64  (load factor 781: nothing grew)|mean find(id), 64 buckets:     2712.9 ns|after rehash to 65536 buckets:    1.5 ns   (bucket_count=65536)|mean find(id), tree of 50000:       61.4 ns|
+size=50000  bucket_count=64  (load factor 781: nothing grew)|mean find(id), 64 buckets:     2713.0 ns|after rehash to 65536 buckets:    1.6 ns   (bucket_count=65536)|mean find(id), tree of 50000:       56.6 ns|
+size=50000  bucket_count=64  (load factor 781: nothing grew)|mean find(id), 64 buckets:     2719.8 ns|after rehash to 65536 buckets:    1.6 ns   (bucket_count=65536)|mean find(id), tree of 50000:       56.6 ns|
+size=50000  bucket_count=64  (load factor 781: nothing grew)|mean find(id), 64 buckets:     2713.8 ns|after rehash to 65536 buckets:    1.5 ns   (bucket_count=65536)|mean find(id), tree of 50000:       56.7 ns|
+## l6_flat_drift x3
+reserve(50000): bucket_count 61439 -> 61439, operator new in churn: 9 (each 1048576 B, first at op 20686)
+reserve(100000): bucket_count 122879 -> 122879, operator new in churn: 0
+reserve(50000): bucket_count 61439 -> 61439, operator new in churn: 9 (each 1048576 B, first at op 20686)
+reserve(100000): bucket_count 122879 -> 122879, operator new in churn: 0
+reserve(50000): bucket_count 61439 -> 61439, operator new in churn: 9 (each 1048576 B, first at op 20686)
+reserve(100000): bucket_count 122879 -> 122879, operator new in churn: 0

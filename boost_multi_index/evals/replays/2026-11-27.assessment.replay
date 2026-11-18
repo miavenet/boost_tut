@@ -1,0 +1,36 @@
+assessment_answer	Forgotten index: client container keeps dangling pointers to destroyed orders. Also stale key and partial failure. 3 allocations per insert vs 1 for multi_index.
+confidence	sure
+assessment_answer	Ward 3 still lists the patient: stale key. MI elements are const, ward only changes via modify/replace which re-file every index. 2 allocations vs 1.
+confidence	0.8
+assessment_answer	get<Tag>() returns a reference to that index (std-container-like); tags survive reordering. project converts the iterator to the same element in the other index in O(1). structure_uniqueness.
+confidence	0.7
+assessment_answer	hashed_unique<key<&Book::isbn>>, ordered_non_unique<key<&Book::author, &Book::year>>; c.get<1>().equal_range(std::make_tuple(std::string("Le Guin")))
+confidence	unsure
+assessment_answer	Plain modify erases it, returns false, size -1. Rollback form restores and keeps it; capture the old value first. replace leaves it unchanged and returns false.
+confidence	sure
+assessment_answer	No erase for rating. Slow: city index walks its equal-key group (~50k). Use replace. Duplicate plate: erased by plain modify; use rollback or replace.
+confidence	0.6
+assessment_answer	Colour bit packed in parent pointer. Ranked adds a size word for nth/rank. random_access has a pointer array.
+confidence	0.5
+assessment_answer	104 B. Pointer stays valid (nodes never move); vector would move. random_access: 96 B plus pointer array, no contiguity, O(n) front inserts.
+confidence	0.7
+assessment_answer	One insert crosses max_load_factor (1.0) and rehashes everything. s.reserve only reaches index 0; reserve get<0> and get<2>.
+confidence	sure
+assessment_answer	Reserve index 1 too; look up via the hashed index not the ordered one (~22 misses); pre-touched allocator for the remaining tail; the arena does not fix the walk.
+confidence	0.6
+assessment_answer	Ladder array; dense slot array; unordered_flat_map with slot index; intrusive lists on a pool. Use MI for warm multi-path tables.
+confidence	0.8
+assessment_answer	MI for the player directory; dense array for rating by id. Guild totals: index on guild.
+confidence	sure
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	p
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	h
+assessment_grade	p

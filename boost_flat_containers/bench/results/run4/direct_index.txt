@@ -1,0 +1,14 @@
+[built NDEBUG not defined: assert()/BOOST_ASSERT checks ON]
+Apple M1 Max, Apple clang 21, -O2. Dense uint32 ids -> 24-byte Config.
+N = 2000  ns/lookup p50 | p99
+  direct index  t[id]                    0.7 |     0.7
+  boost::container::flat_map::find      20.2 |    22.1
+  boost::unordered_flat_map::find        2.6 |     3.9
+N = 100000  ns/lookup p50 | p99
+  direct index  t[id]                    0.7 |     2.0
+  boost::container::flat_map::find      63.1 |    79.4
+  boost::unordered_flat_map::find        3.9 |    10.4
+N = 1000000  ns/lookup p50 | p99
+  direct index  t[id]                    3.3 |     6.5
+  boost::container::flat_map::find     126.3 |   319.0
+  boost::unordered_flat_map::find       13.7 |    20.8

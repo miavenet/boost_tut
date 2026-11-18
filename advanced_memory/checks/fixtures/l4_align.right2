@@ -1,0 +1,6 @@
+#ifdef __cpp_lib_hardware_interference_size
+constexpr std::size_t kLine = std::hardware_destructive_interference_size;
+#else
+constexpr std::size_t kLine = 128;
+#endif
+struct Counters { alignas(kLine) std::atomic<long> a; alignas(kLine) std::atomic<long> b; };

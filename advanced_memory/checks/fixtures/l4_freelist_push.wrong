@@ -1,0 +1,1 @@
+head_ = static_cast<node*>(p);

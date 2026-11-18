@@ -1,0 +1,89 @@
+answer	8,000,000 allocations/s hand-rolled vs 2,000,000/s with multi_index
+confidence	
+continue	
+answer	my answer to M2-C1 from memory
+confidence	
+grade	h
+continue	
+answer	key<&Order::id>
+confidence	
+continue	
+answer	bool set_cl_ord_id(Store& s, std::uint64_t id, std::uint32_t v) {\n    auto& ix = s.get<0>();\n    auto it = ix.find(id);\n    if (it == ix.end()) return false;\n    std::uint32_t old = it->cl_ord_id;\n    return ix.modify(it, [v](Order& o) { o.cl_ord_id = v; }, [old](Order& o) { o.cl_ord_id = old; });\n}
+confidence	unsure
+continue	
+answer	int ahead(const Store& s, std::uint64_t id) {\n    auto it = s.project<ByBook>(s.get<ById>().find(id));\n    auto first = s.get<ByBook>().lower_bound(std::make_tuple(it->side, it->price));\n    return int(std::distance(first, it));\n}
+confidence	
+continue	
+answer	my answer to M2-Q3 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M2-Q4 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M2-Q5 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M2-INT from memory
+confidence	
+grade	h
+continue	
+continue	
+answer	my answer to M3-P1 from memory
+confidence	
+continue	
+answer	my answer to M3-P2 from memory
+confidence	
+continue	
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+hands_on	my own words: done and compared with the key
+continue	
+continue	
+answer	24, 16, 16, 8
+confidence	
+continue	
+answer	s.get<2>().reserve(n); index 0
+confidence	
+continue	
+continue	
+answer	40+16+24
+confidence	80%
+continue	
+answer	void prepare(Store& s, std::size_t n) { s.reserve(n); }
+confidence	0.4
+continue	
+answer	my answer to M3-Q3 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M3-Q4 from memory
+confidence	
+grade	h
+continue	
+answer	my answer to M3-Q5 from memory
+confidence	
+grade	h
+continue	
+continue	
+answer	my answer to M3-INT from memory
+confidence	
+grade	h
+continue	
+answer	void prepare(Store& s, std::size_t n) { s.get<0>().reserve(n); s.get<2>().reserve(n); }
+confidence	
+continue	

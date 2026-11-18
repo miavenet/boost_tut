@@ -1,0 +1,1 @@
+return o.send_hook.is_linked() && o.venue == v;

@@ -1,0 +1,20 @@
+[built NDEBUG defined: assertions OFF]
+Apple M1 Max, Apple clang 21, -O2, Boost 1.90. uint64->uint64.
+
+N = 10000
+A insert one by one (random order)             p50     6.802  p99     6.878  max     6.878 ms
+B sort copy, ctor(ordered_unique_range,...)    p50     0.477  p99     0.524  max     0.524 ms
+C fill sequence, adopt_sequence(ordered_..)    p50     0.468  p99     0.483  max     0.483 ms
+D range ctor (unsorted input, Boost sorts)     p50     0.421  p99     0.457  max     0.457 ms
+E 1000 updates: insert one by one              p50     1.557  p99     1.566  max     1.566 ms
+F 1000 updates: sort, insert(ordered_unique..) p50     0.079  p99     0.120  max     0.120 ms
+  (copy of base alone, subtract from E/F)      p50     0.003  p99     0.004  max     0.004 ms
+
+N = 100000
+A insert one by one (random order)             p50   865.063  p99   868.153  max   868.153 ms
+B sort copy, ctor(ordered_unique_range,...)    p50     6.569  p99     6.645  max     6.645 ms
+C fill sequence, adopt_sequence(ordered_..)    p50     6.520  p99     6.534  max     6.534 ms
+D range ctor (unsorted input, Boost sorts)     p50     5.632  p99     5.687  max     5.687 ms
+E 1000 updates: insert one by one              p50    17.512  p99    17.648  max    17.648 ms
+F 1000 updates: sort, insert(ordered_unique..) p50     0.659  p99     0.681  max     0.681 ms
+  (copy of base alone, subtract from E/F)      p50     0.036  p99     0.043  max     0.043 ms

@@ -1,0 +1,5 @@
+int ahead(const Store& s, std::uint64_t id) {
+    auto it = s.project<ByBook>(s.get<ById>().find(id));
+    auto first = s.get<ByBook>().lower_bound(std::make_tuple(it->side, it->price));
+    return int(std::distance(first, it));
+}

@@ -1,0 +1,1 @@
+b.levels[o->px].erase(Level::s_iterator_to(*o));

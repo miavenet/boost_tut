@@ -1,0 +1,1 @@
+auto* n = static_cast<node*>(p); n->next = head_ ? head_->next : nullptr; if (head_) head_->next = n; else head_ = n;

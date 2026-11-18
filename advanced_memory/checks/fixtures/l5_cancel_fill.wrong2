@@ -1,0 +1,1 @@
+b.clients[o->client].pop_front();

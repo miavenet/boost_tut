@@ -1,0 +1,12 @@
+-- 10000 live orders, ns per lookup (batch of 32) --
+MI hashed_unique (n=10000)               n=200000   mean=    17.2  p50=    16.9  p99=    19.5  p99.9=     20.8  max=    1936.2 ns  >100us:0
+MI ordered_unique (n=10000)              n=200000   mean=    87.0  p50=    85.9  p99=   102.9  p99.9=    123.7  max=   16905.0 ns  >100us:0
+std::unordered_map (n=10000)             n=200000   mean=    19.6  p50=    19.5  p99=    23.4  p99.9=     41.7  max=    1028.7 ns  >100us:0
+boost::unordered_flat_map (n=10000)      n=200000   mean=    20.3  p50=    19.5  p99=    24.7  p99.9=     62.5  max=    1105.5 ns  >100us:0
+dense vector<Order>[id] (n=10000)        n=200000   mean=     8.0  p50=     7.8  p99=     9.1  p99.9=     24.8  max=    1058.6 ns  >100us:0
+-- 4000000 live orders, ns per lookup (batch of 32) --
+MI hashed_unique (n=4000000)             n=200000   mean=   253.2  p50=   246.1  p99=   373.7  p99.9=    501.3  max=   11023.4 ns  >100us:0
+MI ordered_unique (n=4000000)            n=200000   mean=  1045.9  p50=  1032.6  p99=  1341.2  p99.9=   1688.8  max=   48593.8 ns  >100us:0
+std::unordered_map (n=4000000)           n=200000   mean=   292.5  p50=   289.1  p99=   412.8  p99.9=    625.0  max=    1412.8 ns  >100us:0
+boost::unordered_flat_map (n=4000000)    n=200000   mean=   147.8  p50=   144.5  p99=   261.7  p99.9=    382.8  max=    1588.5 ns  >100us:0
+dense vector<Order>[id] (n=4000000)      n=200000   mean=    92.3  p50=    91.2  p99=   170.6  p99.9=    226.6  max=    1376.3 ns  >100us:0

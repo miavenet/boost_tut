@@ -1,0 +1,89 @@
+# raw exit codes, bash, no pipe and no || true — 2026-11-14 10:10:39
+=== ./labs/build/l1_tail_histogram nowarm
+Allocating 200000 objects of 256 B, each written once (the 'message handler').
+
+MALLOC (new in the hot path)   page faults in loop: 3138
+  mean=47 ns  p50=41  p99=1000  p99.9=1500  max=18958 ns
+     <50ns  196744 |########################################
+    <100ns      53 |#
+    <250ns      75 |#
+    <500ns       0 |
+     <1us      886 |#
+     <5us     2224 |#
+    <20us       18 |#
+   >=20us        0 |
+
+arena: warm()=no, max_blocks_per_chunk=256 (hft_mem cap)
+
+ARENA  (hft::thread_arena, pre-faulted)   page faults in loop: 0
+  mean=30 ns  p50=41  p99=42  p99.9=3875  max=8417 ns
+     <50ns  198892 |########################################
+    <100ns     287 |#
+    <250ns      34 |#
+    <500ns       1 |#
+     <1us      326 |#
+     <5us      389 |#
+    <20us       71 |#
+   >=20us        0 |
+rc=0
+=== ./labs/build/l1_one_line
+book size 10000, hot-path operator new calls: 100000
+rc=0
+=== ./labs/build/l1_tripwire
+clean: 300 levels, 1000 orders, no new memory on the hot path
+rc=0
+=== ./labs/build/l1_tripwire forget-reserve
+TRIPWIRE: the hot path asked for new memory (levels.size()=0)
+rc=3
+=== ./labs/build/l4_capstone tiny
+orders=50000 levels=400 best px=1000  region used=0 KiB  overflow allocations=2
+rc=0
+=== ./labs/build/l4_capstone_tripwire tiny
+TRIPWIRE: region exhausted (tripwire mode) -> std::bad_alloc; size the region up
+rc=3
+=== ./labs/build/l4_traps outlive
+arena gone (its region is unmapped), destroying the map now...
+rc=139
+=== ./labs/build/l4_traps thread
+hft_mem: deallocate of memory that is not from this thread's arena (container moved to / destroyed on another thread?)
+rc=134
+=== ./labs/build/l4_traps static
+static container: hft_mem: no thread_arena on this thread
+(fix: create the arena first, then the container, in the thread that owns both)
+rc=0
+=== ./labs/build/l4_traps pmr-nested
+pmr::vector<std::string>      operator new calls: 1
+pmr::vector<std::pmr::string> operator new calls: 0
+rc=0
+=== ./labs/build/l4_traps pmr-move
+move-assign across resources: buffer stolen? no (elements copied into a new r2 buffer)  (b still on r2? yes)
+move-assign, same resource:   buffer stolen? yes
+rc=0
+=== ./labs/build/l4_traps pmr-copy
+copy uses a's resource? no   uses get_default_resource()? yes
+rc=0
+=== ./labs/build/l1_every_alias
+hft::pin_this_thread(0): not pinned (not Linux, or refused)
+node containers (the pool recycles freed nodes):
+  hft::map                           in region?  yes  operator new in sealed churn: 0
+  hft::unordered_map (reserved)      in region?  yes  operator new in sealed churn: 0
+  hft::unordered_node_map (reserved) in region?  yes  operator new in sealed churn: 0
+  hft::multi_index (hashed+ordered)  in region?  yes  operator new in sealed churn: 0
+flat containers (reserve at warm-up, then no growth):
+  hft::flat_map (reserved)           in region?  yes  operator new in sealed churn: 0
+  hft::unordered_flat_map (reserved) in region?  yes  operator new in sealed churn: 0
+  hft::vector (reserved)             in region?  yes  operator new in sealed churn: 0
+  hft::string inside hft::vector     in region?  yes  operator new in sealed churn: 0
+per-message scratch (monotonic over a fixed buffer, reset() per message):
+  hft::scratch<8192>                 in buffer?  yes  operator new in sealed churn: 0
+region: used 6144 KiB of 65536 KiB, overflow allocations 0
+every alias: memory in the arena, zero operator new under seal
+rc=0
+=== ./labs/build/l3_behind_the_scenes
+sizeof(hft::allocator<int>) = 1 (empty class: no pointer stored)
+sizeof(hft::vector<int>) = 24, sizeof(std::pmr::vector<int>) = 32
+thread 1: arena=0x16b502ea0  vector buffer in MY region? yes  string buffer in MY region? yes
+thread 2: arena=0x16b58eea0  vector buffer in MY region? yes  string buffer in MY region? yes
+main thread has an arena? no
+main thread push_back: hft_mem: no thread_arena on this thread
+rc=0

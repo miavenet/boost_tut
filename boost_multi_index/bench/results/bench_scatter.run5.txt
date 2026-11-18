@@ -1,0 +1,7 @@
+N=2000000 orders; ns per node over 1000-node walks of the price index
+[next node within 64 B: 100.0%] sorted arrival, std::allocator           n=10000    mean=     6.5  p50=     6.4  p99=     7.9  p99.9=     10.2  max=      13.5 ns  >100us:0
+[next node within 64 B:   0.0%] random arrival, std::allocator           n=10000    mean=    78.4  p50=    78.1  p99=    88.6  p99.9=    135.8  max=     148.8 ns  >100us:0
+[next node within 64 B: 100.0%] sorted arrival, pmr arena                n=10000    mean=     6.5  p50=     6.4  p99=     8.1  p99.9=     10.2  max=      17.6 ns  >100us:0
+  (arena requested 1 block(s) from upstream)
+[next node within 64 B:   0.0%] random arrival, pmr arena                n=10000    mean=    81.2  p50=    80.8  p99=    90.6  p99.9=    103.3  max=     155.1 ns  >100us:0
+  (arena requested 1 block(s) from upstream)

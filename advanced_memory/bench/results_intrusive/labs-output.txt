@@ -1,0 +1,276 @@
+# lessons 05-07 lab outputs, 2026-11-14 09:20:28, Darwin arm64
+
+### ./labs/build/l5_cancel
+before: in level list? 1  in client list? 1  level 18 size=156
+after:  in level list? 0  in client list? 0  level 18 size=155
+operator new calls during the cancel: 0
+live orders in slab: 9999 of 10000
+after shutdown: live orders 0
+exit=0
+
+### ./labs/build/l5_membership
+== 1. what the hooks cost ==
+sizeof(hook)=16  sizeof(Lean)=32  sizeof(Order with 5 hooks)=112
+orders per 128 B line (this Mac): lean 4.00, hooked 1.14;  per 64 B line (x86): lean 2.00, hooked 0.57
+
+== 2. membership by hook (no search) ==
+order 102: in a send list? 1  pending-ack? 0  active? 0
+after send:  in a send list? 0  pending-ack? 1
+
+== 3. the enum can disagree with the lists; the hook cannot ==
+order 105: state says PendingSend? 0   send hook says linked? 1   <- two sources of truth
+
+== 4. the Venue X trap: ONE hook shared by N venue lists ==
+asked 'is order 101 queued for venue 3?'
+  wrong: send_hook.is_linked()                 -> 1   (it is queued for venue 1!)
+  fix a: is_linked() && o.venue == X  (1 byte)  -> 0
+  fix c: walk to the header                   -> venue 1 after 1 step(s)
+  fix c for the first of 100,001 orders in one list: 100001 steps, 219 us
+  fix b: one hook per venue: 4 venues x 16 B = 64 B more per order
+
+== 5. the cheap alternative: a membership bitmask ==
+bit test in list 3? 1   (O(1), 1 bit per list, but no next/prev and no O(1) unlink:
+   the list itself must still be found and searched to remove the order)
+unlinked send + ack lists
+
+done
+exit=0
+
+### ./labs/build/l5_membership twice
+== 1. what the hooks cost ==
+sizeof(hook)=16  sizeof(Lean)=32  sizeof(Order with 5 hooks)=112
+orders per 128 B line (this Mac): lean 4.00, hooked 1.14;  per 64 B line (x86): lean 2.00, hooked 0.57
+
+== 2. membership by hook (no search) ==
+order 102: in a send list? 1  pending-ack? 0  active? 0
+after send:  in a send list? 0  pending-ack? 1
+
+== 3. the enum can disagree with the lists; the hook cannot ==
+order 105: state says PendingSend? 0   send hook says linked? 1   <- two sources of truth
+
+== 4. the Venue X trap: ONE hook shared by N venue lists ==
+asked 'is order 101 queued for venue 3?'
+  wrong: send_hook.is_linked()                 -> 1   (it is queued for venue 1!)
+  fix a: is_linked() && o.venue == X  (1 byte)  -> 0
+  fix c: walk to the header                   -> venue 1 after 1 step(s)
+  fix c for the first of 100,001 orders in one list: 100001 steps, 265 us
+  fix b: one hook per venue: 4 venues x 16 B = 64 B more per order
+
+== 5. the cheap alternative: a membership bitmask ==
+bit test in list 3? 1   (O(1), 1 bit per list, but no next/prev and no O(1) unlink:
+   the list itself must still be found and searched to remove the order)
+
+== 6. the same order into the SAME list twice ==
+pushed once; pushing again (safe_link asserts in builds without NDEBUG)...
+Assertion failed: (!safemode_or_autounlink || node_algorithms::inited(to_insert)), function push_back, file list.hpp, line 272.
+bash: line 1:  7896 Abort trap: 6           ( ./labs/build/$1 ${2:-} 2>&1 )
+exit=134
+
+### ./labs/build/l5_link_modes
+== safe_link (the default) ==
+fresh:        is_linked=0
+pushed:       is_linked=1
+erased:       is_linked=0   (erase puts the hook back in the default state)
+container destroyed while holding `a`: no assert (the list destructor cleared it first)
+
+== normal_link ==
+is_linked() does not compile; after erase the hook still holds stale pointers,
+so membership must be tracked some other way (a state field, a bit).
+
+== auto_unlink ==
+two pushed:   size=2 (size() walks the list: O(n))
+a.unlink():   size=1  a.is_linked=0
+b went out of scope: size=0  <- the container shrank 'by itself'
+
+== sizes ==
+sizeof hook: safe 16, normal 16, auto 16; sizeof list (header): safe 24, auto/no-size 16
+exit=0
+
+### ./labs/build/l5_models
+sizeof(Order)=32  sizeof(HOrder, 2 hooks)=64
+
+model / container                            new/ins del/cxl    B/ins  B/total   pointer chases (by structure): lookup by id | next in level
+VALUE std::map<id,Order>                        1.00    1.00     72.0     72.0   ~log2(n) nodes | n/a (one order, one structure)
+VALUE std::list<Order> per level                1.00    1.00     48.0     48.2   no id index | 1 (node->next)
+VALUE flat_map<id,Order> (reserved)             0.00    0.00      0.0     40.0   binary search, contiguous | n/a
+VALUE multi_index<hashed id, ordered px>        1.00    1.00     72.0     81.9   bucket + node chain | 1 tree step (amortised)
+POINTER list<Order*> + unordered_map<id,it>     2.00    2.00     76.5    108.7   bucket+node, then node->Order | node->next->Order (2)
+INTRUSIVE slab + 2 hook lists + flat id map     0.00    0.00      0.0     94.4   flat probe -> Order (1) | hook->next is in the Order (1)
+   (intrusive one-time setup: 3 operator new calls, 263872 bytes; the slab, 68 B/order
+    incl. its 4 B generation, came from the pre-faulted thread arena, not operator new)
+exit=0
+
+### ./labs/build/l6_hooks
+== one order in two lists: base hooks + tags, member hooks ==
+  base:   level size 1, client size 1
+  member: level size 1, client size 1
+
+== sizeof each hook on this machine (sizeof(void*) = 8) ==
+  bi::slist_member_hook<>                                          8 B  (1 pointers)
+  bi::list_member_hook<>                                          16 B  (2 pointers)
+  bi::set_member_hook<>                                           32 B  (4 pointers)
+  bi::set_member_hook<bi::optimize_size<true>>                    24 B  (3 pointers)
+  bi::avl_set_member_hook<>                                       32 B  (4 pointers)
+  bi::avl_set_member_hook<bi::optimize_size<true>>                24 B  (3 pointers)
+  bi::bs_set_member_hook<>                                        24 B  (3 pointers)
+  bi::unordered_set_member_hook<>                                  8 B  (1 pointers)
+  bi::unordered_set_member_hook<bi::store_hash<true>>             16 B  (2 pointers)
+  bi::unordered_set_member_hook<bi::optimize_multikey<true>>      16 B  (2 pointers)
+
+== sizeof container headers ==
+  bi::list<T, bi::member_hook<T, bi::list_member_hook<>, &T::l>>  24 B  (3 pointers)
+  bi::list<T, bi::member_hook<T, bi::list_member_hook<>, &T::l>, bi::constant_time_size<false>>  16 B  (2 pointers)
+  bi::slist<T, bi::member_hook<T, bi::slist_member_hook<>, &T::s>>  16 B  (2 pointers)
+  bi::slist<T, bi::member_hook<T, bi::slist_member_hook<>, &T::s>, bi::cache_last<true>>  24 B  (3 pointers)
+  bi::set<T, bi::member_hook<T, bi::set_member_hook<>, &T::h>>    40 B  (5 pointers)
+exit=0
+
+### ./labs/build/l6_buckets
+== unordered_set: the bucket array is yours; it never rehashes by itself ==
+size=50000  bucket_count=64  (load factor 781: nothing grew)
+mean find(id), 64 buckets:     2708.9 ns
+after rehash to 65536 buckets:    1.5 ns   (bucket_count=65536)
+
+== set (red-black tree) by id: O(log n) ==
+mean find(id), tree of 50000:       61.9 ns
+
+== erase_and_dispose: unlink and hand the object back to the slab ==
+slab live: 50000 -> 49999; find(42) now end()
+after clear_and_dispose: slab live 0
+exit=0
+
+### ./labs/build/l6_flat_drift
+reserve(50000): bucket_count 61439 -> 61439, operator new in churn: 9 (each 1048576 B, first at op 20686)
+reserve(100000): bucket_count 122879 -> 122879, operator new in churn: 0
+exit=0
+
+### ./labs/build/l6_index_list
+hook: pointer 16 B, index 8 B
+order with 3 hooks: pointer 80 B, index 56 B
+orders per 128 B line: pointer 1.60, index 2.29;  per 64 B line: 0.80, 1.14
+index list walked in the COPY: 100 102 104 106   <- intact: links are slot numbers, not addresses
+pointer list: COPY's slot 0 says 'next' is at the OLD array (dangling once it is gone)
+offset_ptr hook: 16 B; list walked in the COPY: 100 102 104 106   <- also intact, but 16 B per hook, not 8
+exit=0
+
+### ./labs/build/l6_slab
+slab of 4: region used grew by 2097184 B (the monotonic layer takes a 1 MiB+ chunk), operator new calls 0
+first two slots adjacent? yes (b - a = 64 B)
+LIFO: create after destroy(a) returns a's slot? yes
+full? 1   try_create -> nullptr
+create -> std::bad_alloc (never falls back to malloc)
+churn on a 64 MB slab, mean per destroy+create+write: LIFO 10.6 ns, FIFO 11.5 ns
+(FIFO is a ring of slot numbers written for this comparison, not hft::slab; it does not run ~T)
+exit=0
+
+### ./labs/build/l7_order_book
+order 777: pending-send? 1 pending-ack? 0
+after mark_sent: pending-send? 0 pending-ack? 1  (send queue 49999, ack queue 1)
+level 777 before: 49 orders, qty 4900
+after reduce(777 -> 40): qty 4840
+after cancel(777): level 777 has 48 orders, ack queue 0, find(777)=0x0
+mass cancel client 3: 3125 orders; book now 46874 orders
+operator new calls after warm-up (whole hot section): 0
+handle ids: same slot reused? yes; cancel(old id) again -> false (stale id rejected)
+exit=0
+
+### ./labs/build/l7_patterns
+== 1. timer wheel (64 slots) ==
+  tick fired timer 2 (due 5)
+  tick fired timer 3 (due 70)
+  live timers after 80 ticks: 0
+== 2. pending-ack queue: oldest first, timeout check looks at front() only ==
+  order 100: no ack after 35 ticks -> escalate
+  order 101: no ack after 25 ticks -> escalate
+  still waiting: 2
+== 3. LRU of capacity 3 ==
+  evict 2
+  evict 3
+  LRU order now: 1 4 5
+exit=0
+
+### ./labs/build/l6_traps linked-destroy
+destroy(order 2) while it is still in the level ...
+Assertion failed: (!hook.is_linked()), function destructor_impl, file generic_hook.hpp, line 47.
+bash: line 1:  7907 Abort trap: 6           ( ./labs/build/$b $t 2>&1 )
+exit=134
+
+### ./labs/build/l6_traps order-dies-first
+scope ends: ~Order runs while still linked ...
+Assertion failed: (!hook.is_linked()), function destructor_impl, file generic_hook.hpp, line 47.
+bash: line 1:  7908 Abort trap: 6           ( ./labs/build/$b $t 2>&1 )
+exit=134
+
+### ./labs/build/l6_traps container-dies
+~list with 1,000,000 orders: safe_link 1438 us, normal_link 0.2 us
+normal_link: the orders' hooks were not touched (they still hold links into the dead list;
+             there is no is_linked() to ask, so only your own bookkeeping knows)
+safe_link: every order is unlinked again, slab can take them back: live 1000000
+exit=0
+
+### ./labs/build/l6_traps autounlink
+copy of a linked order is linked? 0   list size=1
+pushed a temporary: size=2
+temporary went out of scope: size=1  <- nobody called erase
+exit=0
+
+### ./labs/build/l6_traps aba
+raw pointer to order 7 now reads id=8 (same address as order 8? yes)
+handle {index 0, gen 0} -> get() = nullptr (stale: order 7 is gone)
+exit=0
+
+### ./labs/build/l6_traps iterate
+for (auto& o : lvl) if (o.id % 2 == 0) lvl.erase(lvl.iterator_to(o)); ...
+bash: line 1:  7914 Segmentation fault: 11  ( ./labs/build/$b $t 2>&1 )
+exit=139
+
+### ./labs/build/l6_traps iterate-fixed
+level: 1 3 5  (size()=3)
+exit=0
+
+### ./labs/build/l6_traps_ndebug linked-destroy
+destroy(order 2) while it is still in the level ...
+new order 99 got the old slot? yes
+bash: line 1:  7917 Segmentation fault: 11  ( ./labs/build/$b $t 2>&1 )
+exit=139
+
+### ./labs/build/l6_traps_ndebug order-dies-first
+scope ends: ~Order runs while still linked ...
+exit=0
+
+### ./labs/build/l6_traps_ndebug container-dies
+~list with 1,000,000 orders: safe_link 1462 us, normal_link 0.2 us
+normal_link: the orders' hooks were not touched (they still hold links into the dead list;
+             there is no is_linked() to ask, so only your own bookkeeping knows)
+safe_link: every order is unlinked again, slab can take them back: live 1000000
+exit=0
+
+### ./labs/build/l6_traps_ndebug autounlink
+copy of a linked order is linked? 0   list size=1
+pushed a temporary: size=2
+temporary went out of scope: size=1  <- nobody called erase
+exit=0
+
+### ./labs/build/l6_traps_ndebug aba
+raw pointer to order 7 now reads id=8 (same address as order 8? yes)
+handle {index 0, gen 0} -> get() = nullptr (stale: order 7 is gone)
+exit=0
+
+### ./labs/build/l6_traps_ndebug iterate
+for (auto& o : lvl) if (o.id % 2 == 0) lvl.erase(lvl.iterator_to(o)); ...
+bash: line 1:  7923 Segmentation fault: 11  ( ./labs/build/$b $t 2>&1 )
+exit=139
+
+### ./labs/build/l6_traps_ndebug iterate-fixed
+level: 1 3 5  (size()=3)
+exit=0
+
+### clang++ -std=c++23 -I/opt/homebrew/include -DBREAK_NORMAL_IS_LINKED labs/l5_link_modes.cpp
+/opt/homebrew/include/boost/intrusive/detail/generic_hook.hpp:204:39: error: static assertion failed due to requirement 'hooktags_impl<boost::intrusive::list_node_traits<void *>, boost::intrusive::member_tag, boost::intrusive::normal_link, boost::intrusive::NoBaseHookId>::safemode_or_autounlink': ( hooktags::safemode_or_autounlink )
+1 error generated.
+exit=1
+
+### clang++ -std=c++23 -I/opt/homebrew/include -DBREAK_AUTO_UNLINK_CTS labs/l5_link_modes.cpp
+/opt/homebrew/include/boost/intrusive/list.hpp:125:34: error: static assertion failed due to requirement '!(constant_time_size && ((int)mhtraits<A, boost::intrusive::list_member_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>, &A::h>::link_mode == (int)auto_unlink))': !(constant_time_size && ((int)value_traits::link_mode == (int)auto_unlink) )
+1 error generated.
+exit=1

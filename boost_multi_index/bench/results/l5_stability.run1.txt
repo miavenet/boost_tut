@@ -1,0 +1,7 @@
+hashed buckets 53 -> 196613, random_access capacity 15 -> 106710
+pointer to element still valid?          yes
+hashed iterator still valid after rehash? yes (by spec)
+same address through random_access?       yes
+std::vector element moved on growth?     yes - old pointer dangles
+random_access: adjacent elements contiguous in memory: 0 of 999
+random_access 50000 x push_front: 866.7 ms   50000 x push_back: 1.0 ms
