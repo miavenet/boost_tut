@@ -58,8 +58,8 @@ and exits without starting a session. A missing progress file changes nothing;
 an unknown lesson lists valid names. A lesson reset retains all past attempt
 records and the other lessons' state; a full reset's attempts remain in its
 archive. A full reset archives even corrupt progress; a lesson reset requires
-readable progress and suggests `--reset` when it is corrupt. Inspect an archive directly with `evals/outcomes.py` for earlier
-outcomes; the current progress report covers its own records only.
+readable progress and suggests `--reset` when it is corrupt.
+The current progress report covers its own records only.
 
 Paper equivalent: copy your dated tracking sheet into an archive first. For a
 full redo, begin a blank sheet. For one lesson, erase only that lesson's checked

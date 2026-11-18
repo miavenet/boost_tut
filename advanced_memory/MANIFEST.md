@@ -83,7 +83,7 @@ format-version: 2
 
 ## Tiers supported
 ```
-tiers: [T0, T1, T2, T3]        # see guidelines/DUAL-MODE.md (the durable-learning method)
+tiers: [T0, T1, T2, T3]        # tiers: see PROTOCOL.md
 detect:
   - model + file/exec tools -> T3
   - model, no tools         -> T2
